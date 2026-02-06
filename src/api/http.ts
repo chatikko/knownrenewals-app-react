@@ -2,8 +2,10 @@ import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 import type { CommonResponse, TokenPair } from "@/types/api";
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from "@/auth/tokenStorage";
 
-export const publicHttp = axios.create({ baseURL: "http://localhost:8000" });
-export const http = axios.create({ baseURL: "http://localhost:8000" });
+const baseURL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+
+export const publicHttp = axios.create({ baseURL });
+export const http = axios.create({ baseURL });
 
 let refreshPromise: Promise<TokenPair> | null = null;
 
@@ -51,3 +53,4 @@ http.interceptors.response.use(
     }
   },
 );
+

@@ -26,6 +26,8 @@ const adminLinks: Array<[string, string, IconName]> = [
 export function AppShell() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const appEnv = (import.meta.env.VITE_APP_ENV ?? import.meta.env.MODE ?? "").toLowerCase();
+  const showSandboxBadge = appEnv !== "" && appEnv !== "production" && appEnv !== "prod";
   const adminProbe = useQuery({
     queryKey: ["admin", "guard"],
     queryFn: () => adminApi.users.list(0, 1),
@@ -69,9 +71,15 @@ export function AppShell() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-md">
             <div className="text-h2 font-semibold tracking-tight text-text-primary">KnowRenewals</div>
+            {showSandboxBadge ? <Badge status="unknown" label="Sandbox" /> : null}
             <Badge status={billingState.tone} label={billingState.label} />
           </div>
           <div className="flex items-center gap-sm">
+            {showSandboxBadge ? (
+              <div className="hidden text-small text-text-secondary md:block">
+                Contact support@knowrenewals.com for demo and production access.
+              </div>
+            ) : null}
             <ThemeToggle />
             <Button variant="secondary" onClick={() => { logout(); navigate("/login"); }}>
               <Icon name="logout" className="mr-xs" />
