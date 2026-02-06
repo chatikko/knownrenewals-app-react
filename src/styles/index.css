@@ -1,0 +1,25 @@
+@import "./tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-text-primary font-sans text-body leading-relaxed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1 {
+    @apply text-h1 font-semibold tracking-tight text-text-primary;
+  }
+
+  h2 {
+    @apply text-h2 font-semibold tracking-tight text-text-primary;
+  }
+}
