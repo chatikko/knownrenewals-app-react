@@ -20,12 +20,23 @@ const figmaCandidates = [
   path.resolve(process.cwd(), "KnowRenewals_Figma_UI.json"),
 ];
 const figmaPath = figmaCandidates.find((candidate) => fs.existsSync(candidate));
-
-if (!figmaPath) {
-  throw new Error("KnowRenewals_Figma_UI.json not found. Expected near the frontend folder.");
-}
-
-const figma = JSON.parse(fs.readFileSync(figmaPath, "utf-8")) as FigmaJson;
+const figmaFallback: FigmaJson = {
+  styles: {
+    colors: {
+      primary: "#059669",
+    },
+    typography: {
+      font: "Inter",
+      h1: { size: 32, weight: 600 },
+      h2: { size: 24, weight: 600 },
+      body: { size: 16, weight: 400 },
+      small: { size: 14, weight: 500 },
+    },
+  },
+};
+const figma = figmaPath
+  ? (JSON.parse(fs.readFileSync(figmaPath, "utf-8")) as FigmaJson)
+  : figmaFallback;
 
 const colors = figma.styles.colors;
 const typo = figma.styles.typography;
