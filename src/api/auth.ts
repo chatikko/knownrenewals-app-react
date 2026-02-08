@@ -11,8 +11,8 @@ export const authApi = {
     return res.data.data;
   },
   verifyEmail: async (payload: { token: string }) => {
-    const res = await publicHttp.post<CommonResponse<{ message: string }>>("/auth/verify-email", payload);
-    return res.data;
+    const res = await publicHttp.post<CommonResponse<TokenPair>>("/auth/verify-email", payload);
+    return res.data.data;
   },
   resendVerification: async (payload: { email: string }) => {
     const res = await publicHttp.post<CommonResponse<{ message: string }>>("/auth/resend-verification", payload);

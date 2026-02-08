@@ -14,7 +14,7 @@ import { ThemeToggle } from "@/components/primitives/ThemeToggle";
 const schema = z.object({
   account_name: z.string().min(2),
   email: z.string().email(),
-  password: z.string().min(12),
+  password: z.string().min(8),
 });
 type Form = z.infer<typeof schema>;
 
@@ -34,6 +34,9 @@ export function SignupPage() {
   const resendErrorMessage = resendMutation.isError && axios.isAxiosError<{ detail?: string }>(resendMutation.error)
     ? resendMutation.error.response?.data?.detail ?? "Could not resend verification email."
     : "Could not resend verification email.";
+  const shouldShowResend = mutation.isError || (
+    mutation.isSuccess && Boolean(mutation.data.data?.message?.toLowerCase().includes("not verified"))
+  );
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background px-lg">
@@ -48,7 +51,7 @@ export function SignupPage() {
           <Input required label="Password" type="password" {...form.register("password")} error={form.formState.errors.password?.message} />
           {mutation.isSuccess ? <Alert tone="success" message={mutation.data.data?.message ?? "Signup successful."} /> : null}
           {mutation.isError ? <Alert tone="danger" message={signupErrorMessage} /> : null}
-          {mutation.isError ? (
+          {shouldShowResend ? (
             <div className="space-y-sm">
               <Alert tone="info" message="Didn't get the verification email? You can resend it." />
               {resendMutation.isSuccess ? (

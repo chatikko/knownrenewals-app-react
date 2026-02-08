@@ -1,37 +1,39 @@
 import { useEffect, useMemo, useRef } from "react";
 import axios from "axios";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authApi } from "@/api/auth";
+import { useAuth } from "@/auth/AuthProvider";
 import { Alert } from "@/components/primitives/Alert";
 import { Card } from "@/components/primitives/Card";
 import { Input } from "@/components/primitives/Input";
 import { Button } from "@/components/primitives/Button";
 import { ThemeToggle } from "@/components/primitives/ThemeToggle";
 
-const schema = z.object({ token: z.string().min(1) });
 const resendSchema = z.object({ email: z.string().email() });
-type Form = z.infer<typeof schema>;
 type ResendForm = z.infer<typeof resendSchema>;
 
 export function VerifyEmailPage() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [params] = useSearchParams();
   const token = useMemo(() => params.get("token") ?? "", [params]);
-  const form = useForm<Form>({
-    resolver: zodResolver(schema),
-    mode: "onChange",
-    reValidateMode: "onChange",
-    defaultValues: { token },
+  const email = useMemo(() => params.get("email") ?? "", [params]);
+  const mutation = useMutation({
+    mutationFn: authApi.verifyEmail,
+    onSuccess: (tokens) => {
+      login(tokens);
+      navigate("/dashboard", { replace: true });
+    },
   });
-  const mutation = useMutation({ mutationFn: authApi.verifyEmail });
   const resendForm = useForm<ResendForm>({
     resolver: zodResolver(resendSchema),
     mode: "onChange",
     reValidateMode: "onChange",
-    defaultValues: { email: "" },
+    defaultValues: { email },
   });
   const resendMutation = useMutation({ mutationFn: authApi.resendVerification });
   const hasQueryToken = token.length > 0;
@@ -56,20 +58,21 @@ export function VerifyEmailPage() {
       </div>
       <Card className="w-full max-w-md">
         <h1 className="mb-lg text-center text-h1">Verify Email</h1>
-        {hasQueryToken ? (
-          <div className="space-y-md">
-            {mutation.isPending ? <Alert tone="info" message="Verifying your email..." /> : null}
-            {mutation.isSuccess ? <Alert tone="success" message="Email verified. You can now log in." /> : null}
-            {mutation.isError ? <Alert tone="danger" message={verifyErrorMessage} /> : null}
+        <div className="space-y-md">
+          {!hasQueryToken ? (
+            <Alert tone="warning" message="Invalid verification link. Request a new verification email below." />
+          ) : null}
+          {hasQueryToken && mutation.isPending ? <Alert tone="info" message="Verifying your email..." /> : null}
+          {hasQueryToken && mutation.isError ? <Alert tone="danger" message={verifyErrorMessage} /> : null}
+          {hasQueryToken && mutation.isPending ? (
+            <p className="text-center text-small text-text-secondary">You will be redirected automatically.</p>
+          ) : null}
+          {hasQueryToken && mutation.isError ? (
             <p className="text-center text-small text-text-secondary">
               <Link className="text-primary" to="/login">Go to login</Link>
             </p>
-          </div>
-        ) : null}
-        <form className="space-y-md" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
-          <Input required label="Verification Token" {...form.register("token")} error={form.formState.errors.token?.message} />
-          <Button className="w-full" isLoading={mutation.isPending}>Verify Email</Button>
-        </form>
+          ) : null}
+        </div>
         <div className="mt-md border-t border-border pt-md">
           <p className="mb-sm text-small text-text-secondary">Didn&apos;t receive the email? Resend verification.</p>
           <form className="space-y-md" onSubmit={resendForm.handleSubmit((values) => resendMutation.mutate(values))}>

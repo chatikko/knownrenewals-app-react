@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -11,7 +12,7 @@ import { Input } from "@/components/primitives/Input";
 import { Button } from "@/components/primitives/Button";
 import { ThemeToggle } from "@/components/primitives/ThemeToggle";
 
-const schema = z.object({ email: z.string().email(), password: z.string().min(12) });
+const schema = z.object({ email: z.string().email(), password: z.string().min(8) });
 type Form = z.infer<typeof schema>;
 
 export function LoginPage() {
@@ -31,6 +32,15 @@ export function LoginPage() {
       navigate("/dashboard");
     },
   });
+  const resendMutation = useMutation({ mutationFn: authApi.resendVerification });
+  const loginErrorDetail = mutation.isError && axios.isAxiosError<{ detail?: string }>(mutation.error)
+    ? mutation.error.response?.data?.detail ?? "Login failed."
+    : "Login failed.";
+  const isUnverifiedEmail = mutation.isError && axios.isAxiosError(mutation.error) && mutation.error.response?.status === 403;
+  const emailForResend = form.watch("email");
+  const resendErrorMessage = resendMutation.isError && axios.isAxiosError<{ detail?: string }>(resendMutation.error)
+    ? resendMutation.error.response?.data?.detail ?? "Could not resend verification email."
+    : "Could not resend verification email.";
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background px-lg">
@@ -42,7 +52,25 @@ export function LoginPage() {
         <form className="space-y-md" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
           <Input required label="Email" type="email" {...form.register("email")} error={form.formState.errors.email?.message} />
           <Input required label="Password" type="password" {...form.register("password")} error={form.formState.errors.password?.message} />
-          {mutation.isError ? <Alert tone="danger" message="Login failed." /> : null}
+          {mutation.isError ? <Alert tone="danger" message={loginErrorDetail} /> : null}
+          {isUnverifiedEmail ? (
+            <div className="space-y-sm">
+              <Alert tone="info" message="Your email is not verified yet. Request a new verification email." />
+              {resendMutation.isSuccess ? (
+                <Alert tone="success" message={resendMutation.data.data?.message ?? "Verification email sent."} />
+              ) : null}
+              {resendMutation.isError ? <Alert tone="danger" message={resendErrorMessage} /> : null}
+              <Button
+                type="button"
+                className="w-full"
+                isLoading={resendMutation.isPending}
+                disabled={!emailForResend}
+                onClick={() => resendMutation.mutate({ email: emailForResend })}
+              >
+                Resend Verification Email
+              </Button>
+            </div>
+          ) : null}
           <Button className="w-full" isLoading={mutation.isPending}>Login</Button>
         </form>
         <p className="mt-md text-center text-small text-text-secondary">
