@@ -70,14 +70,13 @@ export function AppShell() {
       <header className="sticky top-0 z-30 border-b border-border/80 bg-surface/75 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-md">
-            <div className="text-h2 font-semibold tracking-tight text-text-primary">KnowRenewals</div>
-            {showSandboxBadge ? <Badge status="unknown" label="Sandbox" /> : null}
+            <img src="/logo.png" alt="KnowRenewals logo" className="h-10 w-auto" />
             <Badge status={billingState.tone} label={billingState.label} />
           </div>
           <div className="flex items-center gap-sm">
             {showSandboxBadge ? (
-              <div className="hidden text-small text-text-secondary md:block">
-                Contact support@knowrenewals.com for demo and production access.
+              <div className="hidden rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-small font-medium text-amber-900 md:block">
+                Sandbox mode enabled. Contact support@knowrenewals.com for demo and production access.
               </div>
             ) : null}
             <ThemeToggle />

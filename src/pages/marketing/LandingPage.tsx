@@ -16,7 +16,7 @@ export function LandingPage() {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-700">
       <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/75 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <div className="text-lg font-semibold tracking-tight text-slate-900">KnowRenewals</div>
+          <img src="/logo.png" alt="KnowRenewals logo" className="h-10 w-auto" />
 
           <nav className="hidden items-center gap-8 text-sm text-slate-600 md:flex">
             <a href="#features" className="hover:text-slate-900">
@@ -116,18 +116,6 @@ export function LandingPage() {
               </div>
               <p className="mt-2 text-xs text-slate-600">75% contracts in safe window</p>
             </div>
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6">
-          <p className="text-center text-xs font-medium uppercase tracking-wider text-slate-500">Trusted by</p>
-          <div className="mt-4 grid grid-cols-2 gap-3 text-center text-sm text-slate-400 sm:grid-cols-4 lg:grid-cols-6">
-            <div>Company A</div>
-            <div>Company B</div>
-            <div>Company C</div>
-            <div>Company D</div>
-            <div>Company E</div>
-            <div>Company F</div>
           </div>
         </section>
 
