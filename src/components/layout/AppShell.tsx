@@ -26,7 +26,7 @@ const adminLinks: Array<[string, string, IconName]> = [
 export function AppShell() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  const appEnv = (import.meta.env.VITE_APP_ENV ?? import.meta.env.MODE ?? "").toLowerCase();
+  const appEnv = (import.meta.env.REACT_APP_VITE_APP_ENV ?? import.meta.env.MODE ?? "").toLowerCase();
   const showSandboxBadge = appEnv !== "" && appEnv !== "production" && appEnv !== "prod";
   const adminProbe = useQuery({
     queryKey: ["admin", "guard"],
