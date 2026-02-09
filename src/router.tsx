@@ -1,4 +1,4 @@
-import { createHashRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppShell } from "@/components/layout/AppShell";
 import { ProtectedRoute } from "@/components/routing/ProtectedRoute";
 import { AdminRoute } from "@/components/routing/AdminRoute";
@@ -20,7 +20,7 @@ import { AdminContractsPage } from "@/pages/admin/AdminContractsPage";
 import { AdminAuthEventsPage } from "@/pages/admin/AdminAuthEventsPage";
 import { AdminBillingEventsPage } from "@/pages/admin/AdminBillingEventsPage";
 
-export const router = createHashRouter([
+export const router = createBrowserRouter([
   { path: "/", element: <LandingPage />, errorElement: <ErrorPage /> },
   { path: "/login", element: <LoginPage />, errorElement: <ErrorPage /> },
   { path: "/signup", element: <SignupPage />, errorElement: <ErrorPage /> },
