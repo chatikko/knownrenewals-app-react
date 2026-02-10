@@ -11,7 +11,7 @@ React + TypeScript + Vite frontend for KnowRenewals using Tailwind tokens mapped
 Backend base URL comes from `VITE_API_BASE_URL`. Create a `.env` file and set it, for example:
 
 ```bash
-VITE_API_BASE_URL=https://knownrenewals-app-python.onrender.com
+VITE_API_BASE_URL=http://localhost:8000
 VITE_APP_ENV=staging
 ```
 

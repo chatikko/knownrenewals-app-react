@@ -1,23 +1,4 @@
 import { Link } from "react-router-dom";
-import { StaticRouter } from "react-router-dom/server";
-import type { SsgOptions } from "vite-plugin-ssg";
-
-const termsRoute = "/terms-of-service";
-
-export const ssgOptions: SsgOptions = {
-  slug: "terms-of-service",
-  routeUrl: termsRoute,
-  Head: () => (
-    <>
-      <title>Terms of Service | KnowRenewals</title>
-      <meta
-        name="description"
-        content="Review the terms for using KnowRenewals to track contracts, renewals, and team access."
-      />
-    </>
-  ),
-  context: (children) => <StaticRouter location={termsRoute}>{children}</StaticRouter>,
-};
 
 export function TermsOfServicePage() {
   return (

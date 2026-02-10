@@ -46,9 +46,23 @@ export function TeamPage() {
       await qc.invalidateQueries({ queryKey: ["users", "members"] });
     },
   });
+  const removeLoadingId = useMemo(
+    () => (removeMutation.isPending ? (removeMutation.variables as string | undefined) : undefined),
+    [removeMutation.isPending, removeMutation.variables],
+  );
 
   if (membersQuery.isLoading) return <LoadingState />;
-  if (membersQuery.isError) return <ErrorState message={parseError(membersQuery.error, "Failed to load team members.")} />;
+  if (membersQuery.isError) {
+    const message = parseError(membersQuery.error, "Failed to load team members.");
+    if (axios.isAxiosError(membersQuery.error) && membersQuery.error.response?.status === 403) {
+      const detail = (membersQuery.error.response?.data as { detail?: string } | undefined)?.detail ?? "";
+      if (detail.toLowerCase().includes("pro and team")) {
+        return <ErrorState message="Team management is available only on Pro and Team plans. Please upgrade in Billing." />;
+      }
+      return <ErrorState message="Admin access required to manage team members." />;
+    }
+    return <ErrorState message={message} />;
+  }
   if (!membersQuery.data) return <EmptyState message="No members found." />;
 
   const members = membersQuery.data.items;
@@ -57,10 +71,6 @@ export function TeamPage() {
   const seatsUsed = members.length;
   const seatsRemaining = Math.max(0, seatLimit - seatsUsed);
   const addDisabled = createMutation.isPending || seatsRemaining <= 0;
-  const removeLoadingId = useMemo(
-    () => (removeMutation.isPending ? (removeMutation.variables as string | undefined) : undefined),
-    [removeMutation.isPending, removeMutation.variables],
-  );
 
   return (
     <div className="space-y-lg">

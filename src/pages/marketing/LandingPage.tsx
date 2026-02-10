@@ -1,24 +1,5 @@
 import { Link } from "react-router-dom";
-import { StaticRouter } from "react-router-dom/server";
-import type { SsgOptions } from "vite-plugin-ssg";
 import { Check, ChevronRight, Github, Linkedin, Menu, Twitter } from "lucide-react";
-
-const landingRoute = "/";
-
-export const ssgOptions: SsgOptions = {
-  slug: "index",
-  routeUrl: landingRoute,
-  Head: () => (
-    <>
-      <title>KnowRenewals | Renewal tracking without surprises</title>
-      <meta
-        name="description"
-        content="Track contracts, subscriptions, and licenses with reminders so you never miss a renewal."
-      />
-    </>
-  ),
-  context: (children) => <StaticRouter location={landingRoute}>{children}</StaticRouter>,
-};
 
 export function LandingPage() {
   return (

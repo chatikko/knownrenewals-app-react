@@ -12,7 +12,6 @@ import { useAuth } from "@/auth/AuthProvider";
 const appLinks: Array<[string, string, IconName]> = [
   ["/dashboard", "Dashboard", "dashboard"],
   ["/contracts", "Contracts", "contracts"],
-  ["/team", "Team", "users"],
   ["/billing", "Billing", "billing"],
 ];
 
@@ -75,6 +74,11 @@ export function AppShell() {
   })();
 
   const isAdmin = adminProbe.isSuccess;
+  const planTier = (billingStatus.data?.plan_tier ?? "").toLowerCase();
+  const canAccessTeam = planTier === "pro" || planTier === "team";
+  const visibleAppLinks: Array<[string, string, IconName]> = canAccessTeam
+    ? [...appLinks.slice(0, 2), ["/team", "Team", "users"], appLinks[2]]
+    : appLinks;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
@@ -103,7 +107,7 @@ export function AppShell() {
         <nav className="rounded-xl border border-border/90 bg-surface/75 p-md shadow-sm backdrop-blur-xl lg:fixed lg:top-24 lg:w-[260px]">
           <div className="mb-sm px-sm text-small uppercase tracking-[0.08em] text-text-secondary">App</div>
           <div className="mb-md flex flex-col gap-xs">
-            {appLinks.map(([to, label, icon]) => (
+            {visibleAppLinks.map(([to, label, icon]) => (
               <NavLink
                 key={to}
                 to={to}

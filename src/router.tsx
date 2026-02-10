@@ -42,6 +42,7 @@ export const router = createBrowserRouter([
           { path: "contracts/:id", element: <ContractDetailPage /> },
           { path: "billing", element: <BillingPage /> },
           { path: "team", element: <TeamPage /> },
+          { path: "teams", element: <Navigate to="/team" replace /> },
           {
             element: <AdminRoute />,
             children: [
