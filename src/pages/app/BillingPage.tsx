@@ -5,12 +5,50 @@ import { Alert } from "@/components/primitives/Alert";
 import { Badge } from "@/components/primitives/Badge";
 import { Card } from "@/components/primitives/Card";
 import { Button } from "@/components/primitives/Button";
+import { ConfirmAlertDialog } from "@/components/primitives/ConfirmAlertDialog";
 import { LoadingState, ErrorState } from "@/components/QueryState";
+
+type PlanTier = "founders" | "pro" | "team";
+type BillingCycle = "monthly" | "yearly";
+
+const PLAN_DETAILS: Record<PlanTier, { name: string; monthlyPrice: number; yearlyPrice: number; features: string[]; tagline?: string }> = {
+  founders: {
+    name: "Founders",
+    monthlyPrice: 19,
+    yearlyPrice: 190,
+    tagline: "Only for first 50 users",
+    features: ["Up to 25 renewals", "1 user", "Email reminders", "CSV import & export"],
+  },
+  pro: {
+    name: "Pro",
+    monthlyPrice: 99,
+    yearlyPrice: 990,
+    tagline: "Most Popular",
+    features: ["Unlimited renewals", "Up to 5 users", "Custom reminder schedules", "Team-wide visibility"],
+  },
+  team: {
+    name: "Team",
+    monthlyPrice: 199,
+    yearlyPrice: 1990,
+    features: ["Up to 15 users", "Role-based access", "Shared renewal ownership", "Priority support"],
+  },
+};
+
+function formatCurrency(amount: number) {
+  return `$${amount.toLocaleString("en-US")}`;
+}
+
+function formatSubscriptionLabel(tier: PlanTier | null, cycle: BillingCycle | null) {
+  if (!tier || !cycle) return "No active plan";
+  return `${PLAN_DETAILS[tier].name} (${cycle})`;
+}
 
 export function BillingPage() {
   const qc = useQueryClient();
-  const [plan, setPlan] = useState<"monthly" | "yearly">("yearly");
-  const [tier, setTier] = useState<"founders" | "pro" | "team">("pro");
+  const [plan, setPlan] = useState<BillingCycle>("yearly");
+  const [tier, setTier] = useState<PlanTier>("pro");
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showSwitchDialog, setShowSwitchDialog] = useState(false);
   const checkoutPlan = `${tier}_${plan}` as "founders_monthly" | "founders_yearly" | "pro_monthly" | "pro_yearly" | "team_monthly" | "team_yearly";
   const query = useQuery({ queryKey: ["billing", "status"], queryFn: billingApi.status });
   const checkout = useMutation({
@@ -41,52 +79,62 @@ export function BillingPage() {
   if (query.isError) return <ErrorState message="Failed to load billing status." />;
   if (!query.data) return <ErrorState message="Failed to load billing status." />;
   const data = query.data;
+  const normalizedStatus = (data.status ?? "unknown").toLowerCase();
   const statusTone =
-    data.status === "active"
+    normalizedStatus === "active"
       ? "subscribed"
-      : data.status === "trialing" || data.status === "trailing"
+      : normalizedStatus === "trialing" || normalizedStatus === "trailing"
         ? "trialing"
-        : data.status === "past_due"
+        : normalizedStatus === "past_due"
           ? "past_due"
-          : data.status === "canceled"
+          : normalizedStatus === "canceled"
             ? "canceled"
-            : data.status === "inactive"
+            : normalizedStatus === "inactive"
               ? "inactive"
               : "unknown";
-  const isTrialStatus = data.status === "trialing" || data.status === "trailing";
-  const isSubscribed = data.status === "active" || isTrialStatus;
-  const isActiveSubscription = data.status === "active";
+  const isTrialStatus = normalizedStatus === "trialing" || normalizedStatus === "trailing";
+  const isSubscribed = normalizedStatus === "active" || isTrialStatus;
+  const isActiveSubscription = normalizedStatus === "active";
   const isPendingCancel = Boolean(data.cancel_at_period_end);
   const planTier = (data.plan_tier ?? "").toLowerCase();
-  const currentTier: "founders" | "pro" | "team" | null =
+  const currentTier: PlanTier | null =
     planTier === "founders" || planTier === "pro" || planTier === "team"
-      ? (planTier as "founders" | "pro" | "team")
+      ? (planTier as PlanTier)
       : null;
-  const currentPlanCycle: "monthly" | "yearly" | null = data.plan === "monthly" || data.plan === "yearly" ? data.plan : null;
+  const currentPlanCycle: BillingCycle | null = data.plan === "monthly" || data.plan === "yearly" ? data.plan : null;
   const foundersAvailable = Boolean(data.founders_available ?? true);
   const foundersUnavailableForUser = !foundersAvailable && currentTier !== "founders";
   const isCurrentSelection = isSubscribed && currentTier === tier && currentPlanCycle === plan;
+  const isPlanSwitch = isSubscribed && !isCurrentSelection;
+  const selectionLabel = `${PLAN_DETAILS[tier].name} (${plan})`;
+  const isSelectedFoundersUnavailable = foundersUnavailableForUser && tier === "founders";
+  const canCheckout = !isCurrentSelection && !isSelectedFoundersUnavailable;
+  const checkoutButtonLabel = isCurrentSelection
+    ? "Current Plan Selected"
+    : isPlanSwitch
+      ? `Switch to ${PLAN_DETAILS[tier].name}`
+      : `Start ${PLAN_DETAILS[tier].name}`;
 
   return (
     <div className="max-w-5xl space-y-md">
       <div className="space-y-xs">
         <h1 className="text-h1">Billing</h1>
-        <p className="text-small text-text-secondary">Subscription management and plan updates.</p>
+        <p className="text-small text-text-secondary">Manage your subscription, compare plans, and switch anytime.</p>
       </div>
 
       <Card className="space-y-md">
         <div className="flex flex-wrap items-center justify-between gap-sm">
           <h2 className="text-h2">Current Subscription</h2>
-          <Badge status={statusTone} label={data.status ?? "unknown"} />
+          <Badge status={statusTone} label={normalizedStatus} />
         </div>
-        <div className="grid gap-md sm:grid-cols-2">
+        <div className="grid gap-md sm:grid-cols-3">
           <div className="rounded-md border border-border bg-background px-lg py-md">
             <p className="text-small text-text-secondary">Current Plan</p>
-            <p className="text-h2 capitalize">{data.plan_tier ? `${data.plan_tier} (${data.plan ?? "-"})` : (data.plan ?? "No active plan")}</p>
+            <p className="text-h2">{formatSubscriptionLabel(currentTier, currentPlanCycle)}</p>
           </div>
           <div className="rounded-md border border-border bg-background px-lg py-md">
             <p className="text-small text-text-secondary">Subscription Status</p>
-            <p className="text-h2 capitalize">{data.status ?? "-"}</p>
+            <p className="text-h2 capitalize">{normalizedStatus}</p>
             {isTrialStatus ? (
               <p className="text-small text-warning">
                 {typeof data.trial_days_left === "number" ? `${data.trial_days_left} day(s) left in trial.` : "Trial active."}
@@ -94,10 +142,15 @@ export function BillingPage() {
             ) : null}
             {isPendingCancel ? <p className="text-small text-warning">Cancellation scheduled at period end.</p> : null}
           </div>
+          <div className="rounded-md border border-border bg-background px-lg py-md">
+            <p className="text-small text-text-secondary">Billing Cycle</p>
+            <p className="text-h2 capitalize">{currentPlanCycle ?? "-"}</p>
+            <p className="text-small text-text-secondary">Switch instantly from the plans below.</p>
+          </div>
         </div>
         {isSubscribed ? <Badge status="subscribed" label="You can still upgrade anytime" /> : null}
         {isActiveSubscription ? (
-          <div className="flex flex-wrap gap-sm">
+          <div className="flex flex-wrap items-center gap-sm">
             {isPendingCancel ? (
               <Button
                 variant="secondary"
@@ -111,8 +164,7 @@ export function BillingPage() {
                 variant="danger"
                 isLoading={cancel.isPending}
                 onClick={() => {
-                  if (!window.confirm("Cancel subscription at the end of current billing period?")) return;
-                  cancel.mutate();
+                  setShowCancelDialog(true);
                 }}
               >
                 Cancel Subscription
@@ -130,7 +182,7 @@ export function BillingPage() {
         <div className="flex flex-wrap items-center justify-between gap-sm">
           <div className="space-y-xs">
             <h2 className="text-h2">Plans</h2>
-            <p className="text-small text-text-secondary">Compare plans and upgrade anytime.</p>
+            <p className="text-small text-text-secondary">Transparent pricing. No hidden fees. Cancel anytime.</p>
             {foundersUnavailableForUser ? (
               <p className="text-small text-warning">
                 Founders plan is currently full ({data.founders_slots_remaining ?? 0} slots remaining).
@@ -156,107 +208,109 @@ export function BillingPage() {
         </div>
 
         <div className="grid gap-md lg:grid-cols-3">
-          <article
-            className={`rounded-md border px-md py-md ${
-              currentTier === "founders" && isSubscribed
-                ? "border-success/40 bg-success/5"
-                : tier === "founders"
-                  ? "border-primary/50 ring-2 ring-primary/20"
-                  : "border-border bg-background"
-            }`}
-          >
-            <div className="space-y-xs">
-              <p className="text-small font-semibold uppercase tracking-wide text-text-secondary">Founders</p>
-              <p className="text-h2">{plan === "monthly" ? "$19" : "$190"}</p>
-              <p className="text-small text-text-secondary">{plan === "monthly" ? "per month" : "per year (2 months free)"}</p>
-              {currentTier === "founders" && data.status === "active" ? <Badge status="subscribed" label="Current Active" /> : null}
-              {currentTier === "founders" && data.status === "trialing" ? <Badge status="trialing" label="Trialing" /> : null}
-              <p className="text-small font-medium text-warning">Only for first 50 users.</p>
-            </div>
-            <ul className="mt-sm space-y-xs text-small text-text-secondary">
-              <li>Up to 25 renewals</li>
-              <li>1 user</li>
-              <li>Email reminders</li>
-              <li>CSV import &amp; export</li>
-            </ul>
-            <Button
-              className="mt-sm w-full"
-              variant={tier === "founders" ? "primary" : "secondary"}
-              disabled={foundersUnavailableForUser}
-              onClick={() => setTier("founders")}
-            >
-              {currentTier === "founders" && isSubscribed ? "Current Plan" : tier === "founders" ? "Selected" : "Select Founders"}
-            </Button>
-          </article>
-
-          <article
-            className={`rounded-md px-md py-md ${
-              currentTier === "pro" && isSubscribed
-                ? "border-2 border-success/40 bg-success/5"
-                : tier === "pro"
-                  ? "border-2 border-primary/40 bg-primary/5"
-                  : "border border-border bg-background"
-            }`}
-          >
-            <div className="space-y-xs">
-              <p className="text-small font-semibold uppercase tracking-wide text-primary">Pro</p>
-              <p className="text-h2">{plan === "monthly" ? "$99" : "$990"}</p>
-              <p className="text-small text-text-secondary">{plan === "monthly" ? "per month" : "per year (2 months free)"}</p>
-              {currentTier === "pro" && data.status === "active" ? <Badge status="subscribed" label="Current Active" /> : null}
-              {currentTier === "pro" && data.status === "trialing" ? <Badge status="trialing" label="Trialing" /> : null}
-              <Badge status="trialing" label="Most Popular" />
-            </div>
-            <ul className="mt-sm space-y-xs text-small text-text-secondary">
-              <li>Unlimited renewals</li>
-              <li>Up to 5 users</li>
-              <li>Custom reminder schedules</li>
-              <li>Team-wide visibility</li>
-            </ul>
-            <Button className="mt-sm w-full" variant={tier === "pro" ? "primary" : "secondary"} onClick={() => setTier("pro")}>
-              {currentTier === "pro" && isSubscribed ? "Current Plan" : tier === "pro" ? "Selected" : "Select Pro"}
-            </Button>
-          </article>
-
-          <article
-            className={`rounded-md border px-md py-md ${
-              currentTier === "team" && isSubscribed
-                ? "border-success/40 bg-success/5"
-                : tier === "team"
-                  ? "border-primary/50 ring-2 ring-primary/20"
-                  : "border-border bg-background"
-            }`}
-          >
-            <div className="space-y-xs">
-              <p className="text-small font-semibold uppercase tracking-wide text-text-secondary">Team</p>
-              <p className="text-h2">{plan === "monthly" ? "$199" : "$1,990"}</p>
-              <p className="text-small text-text-secondary">{plan === "monthly" ? "per month" : "per year (2 months free)"}</p>
-              {currentTier === "team" && data.status === "active" ? <Badge status="subscribed" label="Current Active" /> : null}
-              {currentTier === "team" && data.status === "trialing" ? <Badge status="trialing" label="Trialing" /> : null}
-            </div>
-            <ul className="mt-sm space-y-xs text-small text-text-secondary">
-              <li>Up to 15 users</li>
-              <li>Role-based access</li>
-              <li>Shared renewal ownership</li>
-              <li>Priority support</li>
-            </ul>
-            <Button className="mt-sm w-full" variant={tier === "team" ? "primary" : "secondary"} onClick={() => setTier("team")}>
-              {currentTier === "team" && isSubscribed ? "Current Plan" : tier === "team" ? "Selected" : "Select Team"}
-            </Button>
-          </article>
+          {(["founders", "pro", "team"] as PlanTier[]).map((planTierOption) => {
+            const details = PLAN_DETAILS[planTierOption];
+            const isCurrentCard = currentTier === planTierOption && isSubscribed;
+            const isSelectedCard = tier === planTierOption;
+            const isFoundersCardUnavailable = foundersUnavailableForUser && planTierOption === "founders";
+            return (
+              <article
+                key={planTierOption}
+                className={`rounded-md border px-md py-md ${
+                  isCurrentCard
+                    ? "border-success/40 bg-success/5"
+                    : isSelectedCard
+                      ? "border-primary/50 ring-2 ring-primary/20"
+                      : "border-border bg-background"
+                }`}
+              >
+                <div className="space-y-xs">
+                  <p className={`text-small font-semibold uppercase tracking-wide ${planTierOption === "pro" ? "text-primary" : "text-text-secondary"}`}>{details.name}</p>
+                  <p className="text-h2">{formatCurrency(plan === "monthly" ? details.monthlyPrice : details.yearlyPrice)}</p>
+                  <p className="text-small text-text-secondary">{plan === "monthly" ? "per month" : "per year (2 months free)"}</p>
+                  {details.tagline ? <Badge status={planTierOption === "founders" ? "soon" : "trialing"} label={details.tagline} /> : null}
+                  {isCurrentCard ? <Badge status="subscribed" label="Current Plan" /> : null}
+                </div>
+                <ul className="mt-sm space-y-xs text-small text-text-secondary">
+                  {details.features.map((feature) => (
+                    <li key={feature}>{feature}</li>
+                  ))}
+                </ul>
+                <Button
+                  className="mt-sm w-full"
+                  variant={isSelectedCard ? "primary" : "secondary"}
+                  disabled={isFoundersCardUnavailable}
+                  onClick={() => setTier(planTierOption)}
+                >
+                  {isCurrentCard ? "Current Plan" : isSelectedCard ? "Selected" : `Select ${details.name}`}
+                </Button>
+              </article>
+            );
+          })}
         </div>
       </Card>
 
       <Card className="space-y-md">
         <h2 className="text-h2">Checkout</h2>
         <p className="text-small text-text-secondary">
-          Proceed with <span className="capitalize">{tier}</span> ({plan}) billing.
+          {isPlanSwitch
+            ? `Switch from ${formatSubscriptionLabel(currentTier, currentPlanCycle)} to ${selectionLabel}.`
+            : `Proceed with ${selectionLabel}.`}
         </p>
+        {isSelectedFoundersUnavailable ? (
+          <Alert tone="warning" message="Founders plan is unavailable for new subscriptions. Please choose Pro or Team." />
+        ) : null}
         {checkout.isError ? <Alert tone="danger" message="Could not start checkout." /> : null}
-        <Button className="w-full sm:w-auto" disabled={isCurrentSelection || foundersUnavailableForUser && tier === "founders"} isLoading={checkout.isPending} onClick={() => checkout.mutate()}>
-          Continue to Checkout
+        <Button
+          className="w-full sm:w-auto"
+          disabled={!canCheckout}
+          isLoading={checkout.isPending}
+          onClick={() => {
+            if (isPlanSwitch) {
+              setShowSwitchDialog(true);
+              return;
+            }
+            checkout.mutate();
+          }}
+        >
+          {checkoutButtonLabel}
         </Button>
         {isCurrentSelection ? <Alert tone="info" message="You are already on this plan and billing cycle." /> : null}
       </Card>
+
+      <ConfirmAlertDialog
+        open={showCancelDialog}
+        title="Cancel Subscription"
+        tone="danger"
+        message="Your plan will remain active until the current billing period ends. You can resume before it ends."
+        confirmLabel="Cancel at Period End"
+        cancelLabel="Keep Subscription"
+        isLoading={cancel.isPending}
+        onClose={() => setShowCancelDialog(false)}
+        onConfirm={() => {
+          cancel.mutate(undefined, {
+            onSuccess: () => setShowCancelDialog(false),
+          });
+        }}
+      />
+
+      <ConfirmAlertDialog
+        open={showSwitchDialog}
+        title="Change Plan"
+        tone="warning"
+        message={`You are switching from ${currentTier ?? "current"} (${currentPlanCycle ?? "current"}) to ${selectionLabel}.`}
+        confirmLabel="Confirm Plan Change"
+        cancelLabel="Keep Current Plan"
+        isLoading={checkout.isPending}
+        onClose={() => setShowSwitchDialog(false)}
+        onConfirm={() => {
+          checkout.mutate(undefined, {
+            onSuccess: () => setShowSwitchDialog(false),
+          });
+        }}
+      >
+        <p className="text-small text-text-secondary">You do not need to unsubscribe first. The checkout page will show final billing details.</p>
+      </ConfirmAlertDialog>
     </div>
   );
 }
