@@ -40,12 +40,13 @@ export function BillingPage() {
             : data.status === "inactive"
               ? "inactive"
               : "unknown";
+  const isSubscribed = data.status === "active" || data.status === "trialing";
 
   return (
-    <div className="max-w-5xl space-y-lg">
+    <div className="max-w-5xl space-y-md">
       <div className="space-y-xs">
         <h1 className="text-h1">Billing</h1>
-        <p className="text-small text-text-secondary">Manage subscription status, pricing, and checkout in one place.</p>
+        <p className="text-small text-text-secondary">Subscription management and plan updates.</p>
       </div>
 
       <Card className="space-y-md">
@@ -53,32 +54,30 @@ export function BillingPage() {
           <h2 className="text-h2">Current Subscription</h2>
           <Badge status={statusTone} label={data.status ?? "unknown"} />
         </div>
-        <div className="grid gap-md sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-md sm:grid-cols-2">
           <div className="rounded-md border border-border bg-background px-lg py-md">
             <p className="text-small text-text-secondary">Current Plan</p>
-            <p className="text-h2 capitalize">{data.plan ?? "-"}</p>
+            <p className="text-h2 capitalize">{data.plan ?? "No active plan"}</p>
           </div>
           <div className="rounded-md border border-border bg-background px-lg py-md">
             <p className="text-small text-text-secondary">Subscription Status</p>
             <p className="text-h2 capitalize">{data.status ?? "-"}</p>
           </div>
-          <div className="rounded-md border border-border bg-background px-lg py-md">
-            <p className="text-small text-text-secondary">Checkout Selection</p>
-            <p className="text-h2 capitalize">{tier}</p>
-            <p className="text-small text-text-secondary capitalize">{plan}</p>
-          </div>
-          <div className="rounded-md border border-border bg-background px-lg py-md">
-            <p className="text-small text-text-secondary">Checkout Plan Key</p>
-            <p className="text-h2">{checkoutPlan}</p>
-          </div>
         </div>
+        <div className="flex flex-wrap gap-sm">
+          <Button variant={isSubscribed ? "secondary" : "primary"} isLoading={checkout.isPending} onClick={() => checkout.mutate()}>
+            {isSubscribed ? "Manage Billing" : "Start Subscription"}
+          </Button>
+          {isSubscribed ? <Badge status="subscribed" label="You can still upgrade anytime" /> : null}
+        </div>
+        {checkout.isError ? <Alert tone="danger" message="Could not start checkout." /> : null}
       </Card>
 
       <Card className="space-y-md">
         <div className="flex flex-wrap items-center justify-between gap-sm">
           <div className="space-y-xs">
             <h2 className="text-h2">Plans</h2>
-            <p className="text-small text-text-secondary">Choose your billing cycle, then continue to checkout.</p>
+            <p className="text-small text-text-secondary">Compare plans and upgrade anytime.</p>
           </div>
           <div className="inline-flex rounded-md border border-border bg-background p-1">
             <Button
