@@ -12,6 +12,7 @@ import { useAuth } from "@/auth/AuthProvider";
 const appLinks: Array<[string, string, IconName]> = [
   ["/dashboard", "Dashboard", "dashboard"],
   ["/contracts", "Contracts", "contracts"],
+  ["/team", "Team", "users"],
   ["/billing", "Billing", "billing"],
 ];
 

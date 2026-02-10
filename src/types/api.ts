@@ -37,10 +37,21 @@ export type Contract = {
 };
 
 export type BillingStatus = {
+  plan_tier?: string | null;
   plan: string | null;
   status: string | null;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
+};
+
+export type Member = {
+  id: string;
+  account_id: string;
+  email: string;
+  is_active: boolean;
+  is_email_verified: boolean;
+  is_admin: boolean;
+  created_at: string;
 };
 
 export type AdminUser = {
