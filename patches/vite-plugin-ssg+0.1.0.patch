@@ -180,12 +180,13 @@ index bdaa2c1..9a09573 100644
          });
  
 diff --git a/node_modules/vite-plugin-ssg/src/server-entry.tsx b/node_modules/vite-plugin-ssg/src/server-entry.tsx
-index a0c5ba9..21d565c 100644
+index a0c5ba9..6c93fa5 100644
 --- a/node_modules/vite-plugin-ssg/src/server-entry.tsx
 +++ b/node_modules/vite-plugin-ssg/src/server-entry.tsx
 @@ -1,24 +1,19 @@
- import React, { Suspense, ComponentType, ReactNode } from "react"
+-import React, { Suspense, ComponentType, ReactNode } from "react"
 -import { prerenderToNodeStream } from "react-dom/static"
++import React, { ComponentType, ReactNode } from "react"
  import ReactDOMServer from "react-dom/server"
 +import { pathToFileURL } from "node:url"
  import { IslandContext } from "./Island"
@@ -231,7 +232,20 @@ index a0c5ba9..21d565c 100644
      const Component = module.default;
      const ssgOptions = module.ssgOptions;
      const contextWrapper: ContextWrapper | undefined = ssgOptions?.context;
-@@ -74,16 +69,14 @@ export const render = async (
+@@ -55,11 +50,7 @@ export const render = async (
+     const pageElement = React.createElement(
+         IslandContext.Provider,
+         { value: islandComponents },
+-        React.createElement(
+-            Suspense,
+-            { fallback: React.createElement("div", null, "Loading...") },
+-            React.createElement(Component)
+-        )
++        React.createElement(Component)
+     );
+ 
+     // Step 4: Wrap with page-defined context (if provided)
+@@ -74,16 +65,14 @@ export const render = async (
      }
  
      // Step 5: Render to HTML

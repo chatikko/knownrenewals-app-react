@@ -79,3 +79,5 @@ export function TermsOfServicePage() {
     </div>
   );
 }
+
+export default TermsOfServicePage;
