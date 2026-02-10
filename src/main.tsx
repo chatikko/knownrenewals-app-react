@@ -28,6 +28,10 @@ function Providers({ children }: { children: React.ReactNode }) {
 }
 
 const rootEl = document.getElementById("root");
+if (rootEl) {
+  // Avoid hydrating mismatched pre-rendered markup on non-SSG routes
+  rootEl.innerHTML = "";
+}
 const pathname =
   typeof window !== "undefined"
     ? (window.location.pathname.replace(/\/+$/, "") || "/")
