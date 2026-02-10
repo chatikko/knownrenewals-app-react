@@ -14,6 +14,7 @@ export default defineConfig({
         baseUrl: "/static",
         css: {
           globalCssPath: "src/styles/index.css",
+          minify: "esbuild",
         },
         images: {
           enabled: false,
