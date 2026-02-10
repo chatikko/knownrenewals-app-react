@@ -1,16 +1,31 @@
 diff --git a/node_modules/vite-plugin-ssg/dist/plugin.js b/node_modules/vite-plugin-ssg/dist/plugin.js
-index 5c2aca7..74363ca 100644
+index 5c2aca7..2c4923d 100644
 --- a/node_modules/vite-plugin-ssg/dist/plugin.js
 +++ b/node_modules/vite-plugin-ssg/dist/plugin.js
-@@ -384,7 +384,6 @@ var __dirname = path3.dirname(fileURLToPath(import.meta.url));
+@@ -1,6 +1,9 @@
+ // src/gen-static.ts
+ import path7 from "path";
+ import fs6 from "fs";
++import React from "react";
++import ReactDOMServer from "react-dom/server";
++const IslandContext = React.createContext({});
+ 
+ // src/page-discovery.ts
+ import path from "path";
+@@ -380,20 +383,17 @@ function toViteLogLevel(level) {
+ }
+ 
+ // src/ssr-renderer.ts
+-var __dirname = path3.dirname(fileURLToPath(import.meta.url));
  var require2 = createRequire(path3.join(process.cwd(), "package.json"));
  var { createServer } = require2("vite");
  var reactPlugin = require2("@vitejs/plugin-react").default;
 -var tailwindcss = require2("@tailwindcss/vite").default;
  async function renderPage(options) {
    const { componentPath, routeUrl, islands, renderHead: shouldRenderHead, config } = options;
-   const serverEntryPath = path3.join(__dirname, "..", "src", "server-entry.tsx");
-@@ -393,7 +392,7 @@ async function renderPage(options) {
+-  const serverEntryPath = path3.join(__dirname, "..", "src", "server-entry.tsx");
+   const vite = await createServer({
+     configFile: false,
      // Don't load vite.config.ts
      root: process.cwd(),
      // Use project's root to resolve node_modules
@@ -19,7 +34,42 @@ index 5c2aca7..74363ca 100644
      appType: "custom",
      logLevel: toViteLogLevel(config.logLevel),
      ssr: {
-@@ -657,16 +656,18 @@ import { createRequire as createRequire2 } from "module";
+@@ -401,11 +401,30 @@ async function renderPage(options) {
+     }
+   });
+   try {
+-    const { render, renderHead } = await vite.ssrLoadModule(serverEntryPath);
+-    const bodyHtml = await render(componentPath, routeUrl, islands);
++    const pageModule = await vite.ssrLoadModule(componentPath);
++    const Component = pageModule.default;
++    const ssgOptions = pageModule.ssgOptions ?? {};
++    const contextWrapper = ssgOptions.context;
++    const islandComponents = {};
++    for (const island of islands) {
++      try {
++        const islandModule = await vite.ssrLoadModule(island.filePath);
++        islandComponents[island.importPath] = islandModule.default;
++      } catch (error) {
++        console.error(`[SSR] Failed to load island ${island.name}:`, error);
++      }
++    }
++    const pageElement = React.createElement(
++      IslandContext.Provider,
++      { value: islandComponents },
++      React.createElement(Component)
++    );
++    const wrapped = typeof contextWrapper === "function" ? await Promise.resolve(contextWrapper(pageElement)) : pageElement;
++    const bodyHtml = ReactDOMServer.renderToString(wrapped);
+     let headHtml = "";
+-    if (shouldRenderHead) {
+-      headHtml = await renderHead(componentPath);
++    if (shouldRenderHead && (ssgOptions.Head || pageModule.Head)) {
++      const HeadComp = ssgOptions.Head || pageModule.Head;
++      headHtml = ReactDOMServer.renderToStaticMarkup(React.createElement(HeadComp));
+     }
+     return { bodyHtml, headHtml };
+   } finally {
+@@ -657,16 +676,18 @@ import { createRequire as createRequire2 } from "module";
  var require3 = createRequire2(path5.join(process.cwd(), "package.json"));
  var { build } = require3("vite");
  var reactPlugin2 = require3("@vitejs/plugin-react").default;
@@ -41,7 +91,7 @@ index 5c2aca7..74363ca 100644
    const tempEntryContent = `
          import '${globalCssRelative}';
          import '${relativePath}';
-@@ -675,7 +676,6 @@ async function buildCssBundle(options) {
+@@ -675,7 +696,6 @@ async function buildCssBundle(options) {
    try {
      const plugins = [
        reactPlugin2(),
@@ -49,7 +99,7 @@ index 5c2aca7..74363ca 100644
        ...config.vite.plugins
      ];
      await build({
-@@ -700,6 +700,11 @@ async function buildCssBundle(options) {
+@@ -700,6 +720,11 @@ async function buildCssBundle(options) {
          cssMinify: config.css.minify,
          minify: true
        },
@@ -61,7 +111,7 @@ index 5c2aca7..74363ca 100644
        logLevel: toViteLogLevel(config.logLevel)
      });
      const files = fs4.readdirSync(outputDir);
-@@ -727,7 +732,6 @@ import { createRequire as createRequire3 } from "module";
+@@ -727,7 +752,6 @@ import { createRequire as createRequire3 } from "module";
  var require4 = createRequire3(path6.join(process.cwd(), "package.json"));
  var { build: build2 } = require4("vite");
  var reactPlugin3 = require4("@vitejs/plugin-react").default;
@@ -69,7 +119,7 @@ index 5c2aca7..74363ca 100644
  async function buildHydrationBundle(options) {
    const { slug, islands, config } = options;
    const outputDir = path6.join(process.cwd(), config.outDir);
-@@ -742,7 +746,6 @@ async function buildHydrationBundle(options) {
+@@ -742,7 +766,6 @@ async function buildHydrationBundle(options) {
    try {
      const plugins = [
        reactPlugin3(),
@@ -77,7 +127,7 @@ index 5c2aca7..74363ca 100644
        ...config.vite.plugins
      ];
      const terserOptions = config.js.minify === "terser" ? {
-@@ -781,6 +784,11 @@ async function buildHydrationBundle(options) {
+@@ -781,6 +804,11 @@ async function buildHydrationBundle(options) {
          terserOptions,
          target: config.js.target
        },
@@ -265,10 +315,26 @@ index a0c5ba9..6c93fa5 100644
      // Look for Head in ssgOptions first, then fallback to direct export
      const Head = module.ssgOptions?.Head || module.Head;
 diff --git a/node_modules/vite-plugin-ssg/src/ssr-renderer.ts b/node_modules/vite-plugin-ssg/src/ssr-renderer.ts
-index c2059a0..0237835 100644
+index c2059a0..f1bc779 100644
 --- a/node_modules/vite-plugin-ssg/src/ssr-renderer.ts
 +++ b/node_modules/vite-plugin-ssg/src/ssr-renderer.ts
-@@ -18,7 +18,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
+@@ -5,20 +5,19 @@
+  */
+ 
+ import path from "node:path";
+-import { fileURLToPath } from "node:url";
+ import { createRequire } from "node:module";
++import React, { ComponentType } from "react";
++import ReactDOMServer from "react-dom/server";
+ import type { IslandInfo } from "./island-scanner";
+ import type { ResolvedSsgConfig } from "./types";
++import { IslandContext } from "./Island";
+ import { toViteLogLevel } from "./config";
+ 
+-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+-
+ // Use createRequire to resolve plugins from the project root (not from this package)
+ // This ensures we use the project's vite/plugins, not the package's copies
  const require = createRequire(path.join(process.cwd(), "package.json"));
  const { createServer } = require("vite");
  const reactPlugin = require("@vitejs/plugin-react").default;
@@ -276,7 +342,15 @@ index c2059a0..0237835 100644
  
  export interface RenderOptions {
      /** Absolute path to the page component */
-@@ -57,7 +56,7 @@ export async function renderPage(options: RenderOptions): Promise<RenderResult>
+@@ -49,15 +48,11 @@ export interface RenderResult {
+ export async function renderPage(options: RenderOptions): Promise<RenderResult> {
+     const { componentPath, routeUrl, islands, renderHead: shouldRenderHead, config } = options;
+ 
+-    // Get the path to server-entry.tsx from this package's src folder
+-    // __dirname is dist/, but we need src/ for the tsx source file (loaded by Vite SSR)
+-    const serverEntryPath = path.join(__dirname, "..", "src", "server-entry.tsx");
+-
+     // Create Vite server for SSR
      const vite = await createServer({
          configFile: false, // Don't load vite.config.ts
          root: process.cwd(), // Use project's root to resolve node_modules
@@ -285,3 +359,52 @@ index c2059a0..0237835 100644
          appType: "custom",
          logLevel: toViteLogLevel(config.logLevel),
          ssr: {
+@@ -66,16 +61,41 @@ export async function renderPage(options: RenderOptions): Promise<RenderResult>
+     });
+ 
+     try {
+-        // Load the SSR entry module from the package
+-        const { render, renderHead } = await vite.ssrLoadModule(serverEntryPath);
++        // Load page module with Vite SSR (handles TS/tsx)
++        const pageModule = await vite.ssrLoadModule(componentPath);
++        const Component: ComponentType = pageModule.default;
++        const ssgOptions = pageModule.ssgOptions ?? {};
++        const contextWrapper = ssgOptions.context;
++
++        // Load islands via Vite SSR as well
++        const islandComponents: Record<string, ComponentType<unknown>> = {};
++        for (const island of islands) {
++            try {
++                const islandModule = await vite.ssrLoadModule(island.filePath);
++                islandComponents[island.importPath] = islandModule.default;
++            } catch (error) {
++                console.error(`[SSR] Failed to load island ${island.name}:`, error);
++            }
++        }
++
++        // Compose tree
++        const pageElement = React.createElement(
++            IslandContext.Provider,
++            { value: islandComponents },
++            React.createElement(Component),
++        );
++
++        const wrapped =
++            typeof contextWrapper === "function"
++                ? await Promise.resolve(contextWrapper(pageElement))
++                : pageElement;
+ 
+-        // Render body content
+-        const bodyHtml = await render(componentPath, routeUrl, islands);
++        const bodyHtml = ReactDOMServer.renderToString(wrapped as React.ReactElement);
+ 
+-        // Render head content if requested
+         let headHtml = "";
+-        if (shouldRenderHead) {
+-            headHtml = await renderHead(componentPath);
++        if (shouldRenderHead && (ssgOptions.Head || pageModule.Head)) {
++            const HeadComp = ssgOptions.Head || pageModule.Head;
++            headHtml = ReactDOMServer.renderToStaticMarkup(React.createElement(HeadComp));
+         }
+ 
+         return { bodyHtml, headHtml };
