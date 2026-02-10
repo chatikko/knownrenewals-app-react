@@ -1,7 +1,22 @@
 [
   {
-    "source": "/*",
+    "source": "/privacy-policy",
+    "destination": "/privacy-policy.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/terms-of-service",
+    "destination": "/terms-of-service.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/",
     "destination": "/index.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/*",
+    "destination": "/spa.html",
     "type": "rewrite"
   }
 ]
