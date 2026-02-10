@@ -41,6 +41,11 @@ export function BillingPage() {
               ? "inactive"
               : "unknown";
   const isSubscribed = data.status === "active" || data.status === "trialing";
+  const planTier = (data.plan_tier ?? "").toLowerCase();
+  const currentTier: "founders" | "pro" | "team" | null =
+    planTier === "founders" || planTier === "pro" || planTier === "team"
+      ? (planTier as "founders" | "pro" | "team")
+      : null;
 
   return (
     <div className="max-w-5xl space-y-md">
@@ -57,20 +62,14 @@ export function BillingPage() {
         <div className="grid gap-md sm:grid-cols-2">
           <div className="rounded-md border border-border bg-background px-lg py-md">
             <p className="text-small text-text-secondary">Current Plan</p>
-            <p className="text-h2 capitalize">{data.plan ?? "No active plan"}</p>
+            <p className="text-h2 capitalize">{data.plan_tier ? `${data.plan_tier} (${data.plan ?? "-"})` : (data.plan ?? "No active plan")}</p>
           </div>
           <div className="rounded-md border border-border bg-background px-lg py-md">
             <p className="text-small text-text-secondary">Subscription Status</p>
             <p className="text-h2 capitalize">{data.status ?? "-"}</p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-sm">
-          <Button variant={isSubscribed ? "secondary" : "primary"} isLoading={checkout.isPending} onClick={() => checkout.mutate()}>
-            {isSubscribed ? "Manage Billing" : "Start Subscription"}
-          </Button>
-          {isSubscribed ? <Badge status="subscribed" label="You can still upgrade anytime" /> : null}
-        </div>
-        {checkout.isError ? <Alert tone="danger" message="Could not start checkout." /> : null}
+        {isSubscribed ? <Badge status="subscribed" label="You can still upgrade anytime" /> : null}
       </Card>
 
       <Card className="space-y-md">
@@ -98,11 +97,21 @@ export function BillingPage() {
         </div>
 
         <div className="grid gap-md lg:grid-cols-3">
-          <article className={`rounded-md border px-md py-md ${tier === "founders" ? "border-primary/50 ring-2 ring-primary/20" : "border-border bg-background"}`}>
+          <article
+            className={`rounded-md border px-md py-md ${
+              currentTier === "founders" && isSubscribed
+                ? "border-success/40 bg-success/5"
+                : tier === "founders"
+                  ? "border-primary/50 ring-2 ring-primary/20"
+                  : "border-border bg-background"
+            }`}
+          >
             <div className="space-y-xs">
               <p className="text-small font-semibold uppercase tracking-wide text-text-secondary">Founders</p>
               <p className="text-h2">{plan === "monthly" ? "$19" : "$190"}</p>
               <p className="text-small text-text-secondary">{plan === "monthly" ? "per month" : "per year (2 months free)"}</p>
+              {currentTier === "founders" && data.status === "active" ? <Badge status="subscribed" label="Current Active" /> : null}
+              {currentTier === "founders" && data.status === "trialing" ? <Badge status="trialing" label="Trialing" /> : null}
               <p className="text-small font-medium text-warning">Only for first 50 users.</p>
             </div>
             <ul className="mt-sm space-y-xs text-small text-text-secondary">
@@ -116,11 +125,21 @@ export function BillingPage() {
             </Button>
           </article>
 
-          <article className={`rounded-md px-md py-md ${tier === "pro" ? "border-2 border-primary/40 bg-primary/5" : "border border-border bg-background"}`}>
+          <article
+            className={`rounded-md px-md py-md ${
+              currentTier === "pro" && isSubscribed
+                ? "border-2 border-success/40 bg-success/5"
+                : tier === "pro"
+                  ? "border-2 border-primary/40 bg-primary/5"
+                  : "border border-border bg-background"
+            }`}
+          >
             <div className="space-y-xs">
               <p className="text-small font-semibold uppercase tracking-wide text-primary">Pro</p>
               <p className="text-h2">{plan === "monthly" ? "$99" : "$990"}</p>
               <p className="text-small text-text-secondary">{plan === "monthly" ? "per month" : "per year (2 months free)"}</p>
+              {currentTier === "pro" && data.status === "active" ? <Badge status="subscribed" label="Current Active" /> : null}
+              {currentTier === "pro" && data.status === "trialing" ? <Badge status="trialing" label="Trialing" /> : null}
               <Badge status="trialing" label="Most Popular" />
             </div>
             <ul className="mt-sm space-y-xs text-small text-text-secondary">
@@ -134,11 +153,21 @@ export function BillingPage() {
             </Button>
           </article>
 
-          <article className={`rounded-md border px-md py-md ${tier === "team" ? "border-primary/50 ring-2 ring-primary/20" : "border-border bg-background"}`}>
+          <article
+            className={`rounded-md border px-md py-md ${
+              currentTier === "team" && isSubscribed
+                ? "border-success/40 bg-success/5"
+                : tier === "team"
+                  ? "border-primary/50 ring-2 ring-primary/20"
+                  : "border-border bg-background"
+            }`}
+          >
             <div className="space-y-xs">
               <p className="text-small font-semibold uppercase tracking-wide text-text-secondary">Team</p>
               <p className="text-h2">{plan === "monthly" ? "$199" : "$1,990"}</p>
               <p className="text-small text-text-secondary">{plan === "monthly" ? "per month" : "per year (2 months free)"}</p>
+              {currentTier === "team" && data.status === "active" ? <Badge status="subscribed" label="Current Active" /> : null}
+              {currentTier === "team" && data.status === "trialing" ? <Badge status="trialing" label="Trialing" /> : null}
             </div>
             <ul className="mt-sm space-y-xs text-small text-text-secondary">
               <li>Up to 15 users</li>
