@@ -24,6 +24,8 @@ export type Contract = {
   id: string;
   account_id: string;
   vendor_name: string;
+  renewal_type?: string | null;
+  renewal_name?: string | null;
   contract_name: string | null;
   renewal_date: string;
   notice_period_days: number;

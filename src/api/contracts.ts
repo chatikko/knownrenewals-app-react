@@ -8,6 +8,8 @@ export const contractsApi = {
   },
   create: async (payload: {
     vendor_name: string;
+    renewal_type?: string;
+    renewal_name?: string;
     contract_name?: string;
     renewal_date: string;
     notice_period_days: number;
@@ -22,6 +24,8 @@ export const contractsApi = {
   },
   update: async (id: string, payload: Partial<{
     vendor_name: string;
+    renewal_type: string;
+    renewal_name: string;
     contract_name: string;
     renewal_date: string;
     notice_period_days: number;
