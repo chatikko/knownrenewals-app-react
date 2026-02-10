@@ -47,12 +47,22 @@ export function AppShell() {
   const billingState = (() => {
     if (billingStatus.isLoading) return { label: "Checking Billing", tone: "unknown" as const };
     if (billingStatus.isError || !billingStatus.data) return { label: "Billing Unknown", tone: "unknown" as const };
+    const isTrialing = billingStatus.data.status === "trialing" || billingStatus.data.status === "trailing";
+    const trialDaysLeft = billingStatus.data.trial_days_left;
 
     switch (billingStatus.data.status) {
       case "active":
         return { label: "Subscribed", tone: "subscribed" as const };
       case "trialing":
-        return { label: "Trialing", tone: "trialing" as const };
+        return {
+          label: typeof trialDaysLeft === "number" ? `Trialing (${trialDaysLeft}d left)` : "Trialing",
+          tone: "trialing" as const,
+        };
+      case "trailing":
+        return {
+          label: typeof trialDaysLeft === "number" ? `Trialing (${trialDaysLeft}d left)` : "Trialing",
+          tone: "trialing" as const,
+        };
       case "past_due":
         return { label: "Past Due", tone: "past_due" as const };
       case "canceled":

@@ -21,7 +21,15 @@ http.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const original = error.config as RetriableConfig | undefined;
+    const paymentRequired = error.response?.status === 402;
     const unauthorized = error.response?.status === 401;
+
+    if (paymentRequired) {
+      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/billing")) {
+        window.location.href = "/billing";
+      }
+      return Promise.reject(error);
+    }
 
     if (!original || !unauthorized || original._retry || original.url?.includes("/auth/refresh")) {
       return Promise.reject(error);
@@ -53,4 +61,3 @@ http.interceptors.response.use(
     }
   },
 );
-

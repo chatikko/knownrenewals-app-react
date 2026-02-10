@@ -41,6 +41,7 @@ export type BillingStatus = {
   plan: string | null;
   status: string | null;
   cancel_at_period_end?: boolean;
+  trial_days_left?: number | null;
   founders_available?: boolean;
   founders_slots_remaining?: number | null;
   stripe_customer_id: string | null;

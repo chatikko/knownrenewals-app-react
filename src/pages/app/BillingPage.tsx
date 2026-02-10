@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { billingApi } from "@/api/billing";
 import { Alert } from "@/components/primitives/Alert";
@@ -44,7 +44,7 @@ export function BillingPage() {
   const statusTone =
     data.status === "active"
       ? "subscribed"
-      : data.status === "trialing"
+      : data.status === "trialing" || data.status === "trailing"
         ? "trialing"
         : data.status === "past_due"
           ? "past_due"
@@ -53,7 +53,9 @@ export function BillingPage() {
             : data.status === "inactive"
               ? "inactive"
               : "unknown";
-  const isSubscribed = data.status === "active" || data.status === "trialing";
+  const isTrialStatus = data.status === "trialing" || data.status === "trailing";
+  const isSubscribed = data.status === "active" || isTrialStatus;
+  const isActiveSubscription = data.status === "active";
   const isPendingCancel = Boolean(data.cancel_at_period_end);
   const planTier = (data.plan_tier ?? "").toLowerCase();
   const currentTier: "founders" | "pro" | "team" | null =
@@ -64,11 +66,6 @@ export function BillingPage() {
   const foundersAvailable = Boolean(data.founders_available ?? true);
   const foundersUnavailableForUser = !foundersAvailable && currentTier !== "founders";
   const isCurrentSelection = isSubscribed && currentTier === tier && currentPlanCycle === plan;
-
-  useEffect(() => {
-    if (currentTier) setTier(currentTier);
-    if (currentPlanCycle) setPlan(currentPlanCycle);
-  }, [currentTier, currentPlanCycle]);
 
   return (
     <div className="max-w-5xl space-y-md">
@@ -90,11 +87,16 @@ export function BillingPage() {
           <div className="rounded-md border border-border bg-background px-lg py-md">
             <p className="text-small text-text-secondary">Subscription Status</p>
             <p className="text-h2 capitalize">{data.status ?? "-"}</p>
+            {isTrialStatus ? (
+              <p className="text-small text-warning">
+                {typeof data.trial_days_left === "number" ? `${data.trial_days_left} day(s) left in trial.` : "Trial active."}
+              </p>
+            ) : null}
             {isPendingCancel ? <p className="text-small text-warning">Cancellation scheduled at period end.</p> : null}
           </div>
         </div>
         {isSubscribed ? <Badge status="subscribed" label="You can still upgrade anytime" /> : null}
-        {isSubscribed ? (
+        {isActiveSubscription ? (
           <div className="flex flex-wrap gap-sm">
             {isPendingCancel ? (
               <Button
@@ -247,7 +249,7 @@ export function BillingPage() {
       <Card className="space-y-md">
         <h2 className="text-h2">Checkout</h2>
         <p className="text-small text-text-secondary">
-          Proceed with <span className="capitalize">{tier}</span> ({plan}) billing. You can manage or cancel anytime.
+          Proceed with <span className="capitalize">{tier}</span> ({plan}) billing.
         </p>
         {checkout.isError ? <Alert tone="danger" message="Could not start checkout." /> : null}
         <Button className="w-full sm:w-auto" disabled={isCurrentSelection || foundersUnavailableForUser && tier === "founders"} isLoading={checkout.isPending} onClick={() => checkout.mutate()}>

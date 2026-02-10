@@ -16,7 +16,7 @@ const styles: Record<BadgeTone, string> = {
   soon: "bg-warning/10 text-warning border-warning/30",
   risk: "bg-danger/10 text-danger border-danger/30",
   subscribed: "bg-success/10 text-success border-success/30",
-  trialing: "bg-primary/10 text-primary border-primary/30",
+  trialing: "bg-warning/10 text-warning border-warning/30",
   past_due: "bg-danger/10 text-danger border-danger/30",
   canceled: "bg-danger/10 text-danger border-danger/30",
   inactive: "bg-background text-text-secondary border-border",
