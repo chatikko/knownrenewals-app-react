@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "ssg": "vite build",
-    "build": "tsc -b && vite build && cp redirects.json dist/",
+    "build": "tsc -b && vite build && cp redirects.json dist/ && cp _redirects dist/ && cp dist/index.html dist/200.html",
     "preview": "vite preview",
+    "preview-dist": "npx serve dist",
     "typecheck": "tsc --noEmit",
     "postinstall": "patch-package"
   },

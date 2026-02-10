@@ -10,14 +10,17 @@ export default defineConfig({
     ssgPlugin({
       pages: "src/pages/marketing",
       config: {
-        outDir: "dist/static",
-        baseUrl: "/static",
+        outDir: "dist",
+        baseUrl: "",
         css: {
           globalCssPath: "src/styles/index.css",
           minify: "esbuild",
         },
         images: {
           enabled: false,
+        },
+        html: {
+          bodyTags: '<script type="module" src="/assets/app.js"></script>',
         },
       },
       devMiddleware: false,
@@ -29,6 +32,15 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: "assets/app.js",
+        chunkFileNames: "assets/[name].js",
+        assetFileNames: "assets/[name][extname]",
+      },
     },
   },
   css: {
