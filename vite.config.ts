@@ -11,7 +11,7 @@ export default defineConfig({
       pages: "src/pages/marketing",
       config: {
         outDir: "dist",
-        baseUrl: "/",
+        baseUrl: ".",
         css: {
           globalCssPath: "src/styles/index.css",
           minify: "esbuild",

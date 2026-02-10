@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "ssg": "vite build",
-    "build": "tsc -b && vite build && cp redirects.json dist/",
+    "build": "tsc -b && vite build && cp redirects.json dist/ && cp public/spa.html dist/",
     "preview": "vite preview",
     "preview-dist": "npx serve dist",
     "typecheck": "tsc --noEmit",
