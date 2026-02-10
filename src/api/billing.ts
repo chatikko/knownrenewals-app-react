@@ -22,4 +22,12 @@ export const billingApi = {
     const res = await http.post<CommonResponse<{ url: string }>>("/billing/checkout-session", payload);
     return res.data.data;
   },
+  cancel: async () => {
+    const res = await http.post<CommonResponse<{ message: string }>>("/billing/cancel");
+    return res.data.data;
+  },
+  resume: async () => {
+    const res = await http.post<CommonResponse<{ message: string }>>("/billing/resume");
+    return res.data.data;
+  },
 };
