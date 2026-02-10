@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { billingApi } from "@/api/billing";
 import { Alert } from "@/components/primitives/Alert";
 import { Badge } from "@/components/primitives/Badge";
@@ -8,6 +8,7 @@ import { Button } from "@/components/primitives/Button";
 import { LoadingState, ErrorState } from "@/components/QueryState";
 
 export function BillingPage() {
+  const qc = useQueryClient();
   const [plan, setPlan] = useState<"monthly" | "yearly">("yearly");
   const [tier, setTier] = useState<"founders" | "pro" | "team">("pro");
   const checkoutPlan = `${tier}_${plan}` as "founders_monthly" | "founders_yearly" | "pro_monthly" | "pro_yearly" | "team_monthly" | "team_yearly";
@@ -21,6 +22,18 @@ export function BillingPage() {
       }),
     onSuccess: (data) => {
       window.location.href = data.url;
+    },
+  });
+  const cancel = useMutation({
+    mutationFn: billingApi.cancel,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["billing", "status"] });
+    },
+  });
+  const resume = useMutation({
+    mutationFn: billingApi.resume,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["billing", "status"] });
     },
   });
 
@@ -41,11 +54,21 @@ export function BillingPage() {
               ? "inactive"
               : "unknown";
   const isSubscribed = data.status === "active" || data.status === "trialing";
+  const isPendingCancel = Boolean(data.cancel_at_period_end);
   const planTier = (data.plan_tier ?? "").toLowerCase();
   const currentTier: "founders" | "pro" | "team" | null =
     planTier === "founders" || planTier === "pro" || planTier === "team"
       ? (planTier as "founders" | "pro" | "team")
       : null;
+  const currentPlanCycle: "monthly" | "yearly" | null = data.plan === "monthly" || data.plan === "yearly" ? data.plan : null;
+  const foundersAvailable = Boolean(data.founders_available ?? true);
+  const foundersUnavailableForUser = !foundersAvailable && currentTier !== "founders";
+  const isCurrentSelection = isSubscribed && currentTier === tier && currentPlanCycle === plan;
+
+  useEffect(() => {
+    if (currentTier) setTier(currentTier);
+    if (currentPlanCycle) setPlan(currentPlanCycle);
+  }, [currentTier, currentPlanCycle]);
 
   return (
     <div className="max-w-5xl space-y-md">
@@ -67,9 +90,38 @@ export function BillingPage() {
           <div className="rounded-md border border-border bg-background px-lg py-md">
             <p className="text-small text-text-secondary">Subscription Status</p>
             <p className="text-h2 capitalize">{data.status ?? "-"}</p>
+            {isPendingCancel ? <p className="text-small text-warning">Cancellation scheduled at period end.</p> : null}
           </div>
         </div>
         {isSubscribed ? <Badge status="subscribed" label="You can still upgrade anytime" /> : null}
+        {isSubscribed ? (
+          <div className="flex flex-wrap gap-sm">
+            {isPendingCancel ? (
+              <Button
+                variant="secondary"
+                isLoading={resume.isPending}
+                onClick={() => resume.mutate()}
+              >
+                Resume Subscription
+              </Button>
+            ) : (
+              <Button
+                variant="danger"
+                isLoading={cancel.isPending}
+                onClick={() => {
+                  if (!window.confirm("Cancel subscription at the end of current billing period?")) return;
+                  cancel.mutate();
+                }}
+              >
+                Cancel Subscription
+              </Button>
+            )}
+            {cancel.isError ? <Alert tone="danger" message="Could not cancel subscription." /> : null}
+            {resume.isError ? <Alert tone="danger" message="Could not resume subscription." /> : null}
+            {cancel.isSuccess ? <Alert tone="success" message={cancel.data.message ?? "Subscription cancellation scheduled."} /> : null}
+            {resume.isSuccess ? <Alert tone="success" message={resume.data.message ?? "Subscription resumed."} /> : null}
+          </div>
+        ) : null}
       </Card>
 
       <Card className="space-y-md">
@@ -77,6 +129,11 @@ export function BillingPage() {
           <div className="space-y-xs">
             <h2 className="text-h2">Plans</h2>
             <p className="text-small text-text-secondary">Compare plans and upgrade anytime.</p>
+            {foundersUnavailableForUser ? (
+              <p className="text-small text-warning">
+                Founders plan is currently full ({data.founders_slots_remaining ?? 0} slots remaining).
+              </p>
+            ) : null}
           </div>
           <div className="inline-flex rounded-md border border-border bg-background p-1">
             <Button
@@ -120,8 +177,13 @@ export function BillingPage() {
               <li>Email reminders</li>
               <li>CSV import &amp; export</li>
             </ul>
-            <Button className="mt-sm w-full" variant={tier === "founders" ? "primary" : "secondary"} onClick={() => setTier("founders")}>
-              {tier === "founders" ? "Selected" : "Select Founders"}
+            <Button
+              className="mt-sm w-full"
+              variant={tier === "founders" ? "primary" : "secondary"}
+              disabled={foundersUnavailableForUser}
+              onClick={() => setTier("founders")}
+            >
+              {currentTier === "founders" && isSubscribed ? "Current Plan" : tier === "founders" ? "Selected" : "Select Founders"}
             </Button>
           </article>
 
@@ -149,7 +211,7 @@ export function BillingPage() {
               <li>Team-wide visibility</li>
             </ul>
             <Button className="mt-sm w-full" variant={tier === "pro" ? "primary" : "secondary"} onClick={() => setTier("pro")}>
-              {tier === "pro" ? "Selected" : "Select Pro"}
+              {currentTier === "pro" && isSubscribed ? "Current Plan" : tier === "pro" ? "Selected" : "Select Pro"}
             </Button>
           </article>
 
@@ -176,7 +238,7 @@ export function BillingPage() {
               <li>Priority support</li>
             </ul>
             <Button className="mt-sm w-full" variant={tier === "team" ? "primary" : "secondary"} onClick={() => setTier("team")}>
-              {tier === "team" ? "Selected" : "Select Team"}
+              {currentTier === "team" && isSubscribed ? "Current Plan" : tier === "team" ? "Selected" : "Select Team"}
             </Button>
           </article>
         </div>
@@ -188,9 +250,10 @@ export function BillingPage() {
           Proceed with <span className="capitalize">{tier}</span> ({plan}) billing. You can manage or cancel anytime.
         </p>
         {checkout.isError ? <Alert tone="danger" message="Could not start checkout." /> : null}
-        <Button className="w-full sm:w-auto" isLoading={checkout.isPending} onClick={() => checkout.mutate()}>
+        <Button className="w-full sm:w-auto" disabled={isCurrentSelection || foundersUnavailableForUser && tier === "founders"} isLoading={checkout.isPending} onClick={() => checkout.mutate()}>
           Continue to Checkout
         </Button>
+        {isCurrentSelection ? <Alert tone="info" message="You are already on this plan and billing cycle." /> : null}
       </Card>
     </div>
   );
