@@ -1,4 +1,23 @@
 import { Link } from "react-router-dom";
+import { StaticRouter } from "react-router-dom/server";
+import type { SsgOptions } from "vite-plugin-ssg";
+
+const privacyRoute = "/privacy-policy";
+
+export const ssgOptions: SsgOptions = {
+  slug: "privacy-policy",
+  routeUrl: privacyRoute,
+  Head: () => (
+    <>
+      <title>Privacy Policy | KnowRenewals</title>
+      <meta
+        name="description"
+        content="Learn how KnowRenewals handles account information, contract metadata, and contact details."
+      />
+    </>
+  ),
+  context: (children) => <StaticRouter location={privacyRoute}>{children}</StaticRouter>,
+};
 
 export function PrivacyPolicyPage() {
   return (

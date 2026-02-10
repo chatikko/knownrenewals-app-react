@@ -1,0 +1,273 @@
+diff --git a/node_modules/vite-plugin-ssg/dist/plugin.js b/node_modules/vite-plugin-ssg/dist/plugin.js
+index 5c2aca7..74363ca 100644
+--- a/node_modules/vite-plugin-ssg/dist/plugin.js
++++ b/node_modules/vite-plugin-ssg/dist/plugin.js
+@@ -384,7 +384,6 @@ var __dirname = path3.dirname(fileURLToPath(import.meta.url));
+ var require2 = createRequire(path3.join(process.cwd(), "package.json"));
+ var { createServer } = require2("vite");
+ var reactPlugin = require2("@vitejs/plugin-react").default;
+-var tailwindcss = require2("@tailwindcss/vite").default;
+ async function renderPage(options) {
+   const { componentPath, routeUrl, islands, renderHead: shouldRenderHead, config } = options;
+   const serverEntryPath = path3.join(__dirname, "..", "src", "server-entry.tsx");
+@@ -393,7 +392,7 @@ async function renderPage(options) {
+     // Don't load vite.config.ts
+     root: process.cwd(),
+     // Use project's root to resolve node_modules
+-    plugins: [reactPlugin(), tailwindcss(), ...config.vite.plugins],
++    plugins: [reactPlugin(), ...config.vite.plugins],
+     appType: "custom",
+     logLevel: toViteLogLevel(config.logLevel),
+     ssr: {
+@@ -657,16 +656,18 @@ import { createRequire as createRequire2 } from "module";
+ var require3 = createRequire2(path5.join(process.cwd(), "package.json"));
+ var { build } = require3("vite");
+ var reactPlugin2 = require3("@vitejs/plugin-react").default;
+-var tailwindcss2 = require3("@tailwindcss/vite").default;
++var tailwindcss2 = require3("tailwindcss");
++var autoprefixer2 = require3("autoprefixer");
+ async function buildCssBundle(options) {
+   const { componentPath, slug, config } = options;
+   const outputDir = path5.join(process.cwd(), config.outDir);
++  const normalizeImportPath = (value) => value.split(path5.sep).join("/");
+   const tempDir = path5.join(process.cwd(), "node_modules", ".vite-plugin-ssg");
+   fs4.mkdirSync(tempDir, { recursive: true });
+   const tempEntryPath = path5.join(tempDir, `_temp_${slug}_entry.tsx`);
+-  const relativePath = path5.relative(path5.dirname(tempEntryPath), componentPath);
++  const relativePath = normalizeImportPath(path5.relative(path5.dirname(tempEntryPath), componentPath));
+   const globalCssAbsolute = path5.join(process.cwd(), config.css.globalCssPath);
+-  const globalCssRelative = path5.relative(path5.dirname(tempEntryPath), globalCssAbsolute);
++  const globalCssRelative = normalizeImportPath(path5.relative(path5.dirname(tempEntryPath), globalCssAbsolute));
+   const tempEntryContent = `
+         import '${globalCssRelative}';
+         import '${relativePath}';
+@@ -675,7 +676,6 @@ async function buildCssBundle(options) {
+   try {
+     const plugins = [
+       reactPlugin2(),
+-      tailwindcss2(),
+       ...config.vite.plugins
+     ];
+     await build({
+@@ -700,6 +700,11 @@ async function buildCssBundle(options) {
+         cssMinify: config.css.minify,
+         minify: true
+       },
++      css: {
++        postcss: {
++          plugins: [tailwindcss2(), autoprefixer2()]
++        }
++      },
+       logLevel: toViteLogLevel(config.logLevel)
+     });
+     const files = fs4.readdirSync(outputDir);
+@@ -727,7 +732,6 @@ import { createRequire as createRequire3 } from "module";
+ var require4 = createRequire3(path6.join(process.cwd(), "package.json"));
+ var { build: build2 } = require4("vite");
+ var reactPlugin3 = require4("@vitejs/plugin-react").default;
+-var tailwindcss3 = require4("@tailwindcss/vite").default;
+ async function buildHydrationBundle(options) {
+   const { slug, islands, config } = options;
+   const outputDir = path6.join(process.cwd(), config.outDir);
+@@ -742,7 +746,6 @@ async function buildHydrationBundle(options) {
+   try {
+     const plugins = [
+       reactPlugin3(),
+-      tailwindcss3(),
+       ...config.vite.plugins
+     ];
+     const terserOptions = config.js.minify === "terser" ? {
+@@ -781,6 +784,11 @@ async function buildHydrationBundle(options) {
+         terserOptions,
+         target: config.js.target
+       },
++      css: {
++        postcss: {
++          plugins: [tailwindcss2(), autoprefixer2()]
++        }
++      },
+       logLevel: toViteLogLevel(config.logLevel)
+     });
+     return {
+diff --git a/node_modules/vite-plugin-ssg/src/css-builder.ts b/node_modules/vite-plugin-ssg/src/css-builder.ts
+index d0b06b5..665e696 100644
+--- a/node_modules/vite-plugin-ssg/src/css-builder.ts
++++ b/node_modules/vite-plugin-ssg/src/css-builder.ts
+@@ -15,7 +15,8 @@ import { toViteLogLevel } from "./config";
+ const require = createRequire(path.join(process.cwd(), "package.json"));
+ const { build } = require("vite");
+ const reactPlugin = require("@vitejs/plugin-react").default;
+-const tailwindcss = require("@tailwindcss/vite").default;
++const tailwindcss = require("tailwindcss");
++const autoprefixer = require("autoprefixer");
+ 
+ export interface CssBuildOptions {
+     /** Absolute path to the page component */
+@@ -41,17 +42,19 @@ export async function buildCssBundle(options: CssBuildOptions): Promise<CssBuild
+     const { componentPath, slug, config } = options;
+     const outputDir = path.join(process.cwd(), config.outDir);
+ 
++    const normalizeImportPath = (value: string) => value.split(path.sep).join("/");
++
+     // Create temp entry file that imports page + global CSS
+     const tempDir = path.join(process.cwd(), "node_modules", ".vite-plugin-ssg");
+     fs.mkdirSync(tempDir, { recursive: true });
+     const tempEntryPath = path.join(tempDir, `_temp_${slug}_entry.tsx`);
+ 
+     // Calculate relative path from temp entry to component
+-    const relativePath = path.relative(path.dirname(tempEntryPath), componentPath);
++    const relativePath = normalizeImportPath(path.relative(path.dirname(tempEntryPath), componentPath));
+ 
+     // Calculate relative path to global CSS
+     const globalCssAbsolute = path.join(process.cwd(), config.css.globalCssPath);
+-    const globalCssRelative = path.relative(path.dirname(tempEntryPath), globalCssAbsolute);
++    const globalCssRelative = normalizeImportPath(path.relative(path.dirname(tempEntryPath), globalCssAbsolute));
+ 
+     const tempEntryContent = `
+         import '${globalCssRelative}';
+@@ -64,7 +67,6 @@ export async function buildCssBundle(options: CssBuildOptions): Promise<CssBuild
+         // Combine default plugins with user plugins
+         const plugins = [
+             reactPlugin(),
+-            tailwindcss(),
+             ...config.vite.plugins,
+         ];
+ 
+@@ -88,6 +90,11 @@ export async function buildCssBundle(options: CssBuildOptions): Promise<CssBuild
+                 cssMinify: config.css.minify,
+                 minify: true,
+             },
++            css: {
++                postcss: {
++                    plugins: [tailwindcss(), autoprefixer()],
++                },
++            },
+             logLevel: toViteLogLevel(config.logLevel),
+         });
+ 
+diff --git a/node_modules/vite-plugin-ssg/src/hydration-builder.ts b/node_modules/vite-plugin-ssg/src/hydration-builder.ts
+index bdaa2c1..9a09573 100644
+--- a/node_modules/vite-plugin-ssg/src/hydration-builder.ts
++++ b/node_modules/vite-plugin-ssg/src/hydration-builder.ts
+@@ -16,7 +16,8 @@ import { toViteLogLevel } from "./config";
+ const require = createRequire(path.join(process.cwd(), "package.json"));
+ const { build } = require("vite");
+ const reactPlugin = require("@vitejs/plugin-react").default;
+-const tailwindcss = require("@tailwindcss/vite").default;
++const tailwindcss = require("tailwindcss");
++const autoprefixer = require("autoprefixer");
+ 
+ export interface HydrationBuildOptions {
+     /** Output slug for naming the hydration file */
+@@ -61,7 +62,6 @@ export async function buildHydrationBundle(
+         // Combine default plugins with user plugins
+         const plugins = [
+             reactPlugin(),
+-            tailwindcss(),
+             ...config.vite.plugins,
+         ];
+ 
+@@ -103,6 +103,11 @@ export async function buildHydrationBundle(
+                 terserOptions,
+                 target: config.js.target,
+             },
++            css: {
++                postcss: {
++                    plugins: [tailwindcss(), autoprefixer()],
++                },
++            },
+             logLevel: toViteLogLevel(config.logLevel),
+         });
+ 
+diff --git a/node_modules/vite-plugin-ssg/src/server-entry.tsx b/node_modules/vite-plugin-ssg/src/server-entry.tsx
+index a0c5ba9..21d565c 100644
+--- a/node_modules/vite-plugin-ssg/src/server-entry.tsx
++++ b/node_modules/vite-plugin-ssg/src/server-entry.tsx
+@@ -1,24 +1,19 @@
+ import React, { Suspense, ComponentType, ReactNode } from "react"
+-import { prerenderToNodeStream } from "react-dom/static"
+ import ReactDOMServer from "react-dom/server"
++import { pathToFileURL } from "node:url"
+ import { IslandContext } from "./Island"
+ import type { ContextWrapper } from "./types"
+ 
+-// Helper to convert Node stream to string
+-async function streamToString(stream: NodeJS.ReadableStream): Promise<string> {
+-    const chunks: Buffer[] = [];
+-    for await (const chunk of stream) {
+-        chunks.push(Buffer.from(chunk));
+-    }
+-    return Buffer.concat(chunks).toString("utf-8");
+-}
+-
+ export interface IslandInfo {
+     name: string;
+     filePath: string;
+     importPath: string;
+ }
+ 
++function toModuleSpecifier(filePath: string) {
++    return pathToFileURL(filePath).href;
++}
++
+ /**
+  * Render the page body content with island components loaded
+  *
+@@ -38,7 +33,7 @@ export const render = async (
+     for (const island of islands) {
+         try {
+             console.log(`[SSR] Loading island component: ${island.name}`)
+-            const islandModule = await import(island.filePath /* @vite-ignore */);
++            const islandModule = await import(toModuleSpecifier(island.filePath) /* @vite-ignore */);
+             islandComponents[island.importPath] = islandModule.default;
+         } catch (error) {
+             console.error(`[SSR] Failed to load island ${island.name}:`, error);
+@@ -46,7 +41,7 @@ export const render = async (
+     }
+ 
+     // Step 2: Load the page module
+-    const module = await import(modulePath /* @vite-ignore */);
++    const module = await import(toModuleSpecifier(modulePath) /* @vite-ignore */);
+     const Component = module.default;
+     const ssgOptions = module.ssgOptions;
+     const contextWrapper: ContextWrapper | undefined = ssgOptions?.context;
+@@ -74,16 +69,14 @@ export const render = async (
+     }
+ 
+     // Step 5: Render to HTML
+-    const { prelude } = await prerenderToNodeStream(appElement as React.ReactElement);
+-    const html = await streamToString(prelude);
+-    return html;
++    return ReactDOMServer.renderToString(appElement as React.ReactElement);
+ }
+ 
+ /**
+  * Render the page's Head component from ssgOptions.Head
+  */
+ export const renderHead = async (modulePath: string): Promise<string> => {
+-    const module = await import(modulePath /* @vite-ignore */);
++    const module = await import(toModuleSpecifier(modulePath) /* @vite-ignore */);
+ 
+     // Look for Head in ssgOptions first, then fallback to direct export
+     const Head = module.ssgOptions?.Head || module.Head;
+diff --git a/node_modules/vite-plugin-ssg/src/ssr-renderer.ts b/node_modules/vite-plugin-ssg/src/ssr-renderer.ts
+index c2059a0..0237835 100644
+--- a/node_modules/vite-plugin-ssg/src/ssr-renderer.ts
++++ b/node_modules/vite-plugin-ssg/src/ssr-renderer.ts
+@@ -18,7 +18,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
+ const require = createRequire(path.join(process.cwd(), "package.json"));
+ const { createServer } = require("vite");
+ const reactPlugin = require("@vitejs/plugin-react").default;
+-const tailwindcss = require("@tailwindcss/vite").default;
+ 
+ export interface RenderOptions {
+     /** Absolute path to the page component */
+@@ -57,7 +56,7 @@ export async function renderPage(options: RenderOptions): Promise<RenderResult>
+     const vite = await createServer({
+         configFile: false, // Don't load vite.config.ts
+         root: process.cwd(), // Use project's root to resolve node_modules
+-        plugins: [reactPlugin(), tailwindcss(), ...config.vite.plugins],
++        plugins: [reactPlugin(), ...config.vite.plugins],
+         appType: "custom",
+         logLevel: toViteLogLevel(config.logLevel),
+         ssr: {
