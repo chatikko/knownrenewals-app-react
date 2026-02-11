@@ -11,6 +11,7 @@ import { Table } from "@/components/primitives/Table";
 import { EmptyState, ErrorState, LoadingState } from "@/components/QueryState";
 
 const PLAN_SEATS: Record<string, number> = {
+  trialing: 1,
   founders: 1,
   pro: 5,
   team: 15,
