@@ -46,15 +46,20 @@ function formatSubscriptionLabel(tier: PlanTier | null, cycle: BillingCycle | nu
 export function BillingPage() {
   const qc = useQueryClient();
   const [plan, setPlan] = useState<BillingCycle>("yearly");
-  const [tier, setTier] = useState<PlanTier>("pro");
+  const [pendingPlan, setPendingPlan] = useState<{ tier: PlanTier; cycle: BillingCycle } | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showSwitchDialog, setShowSwitchDialog] = useState(false);
-  const checkoutPlan = `${tier}_${plan}` as "founders_monthly" | "founders_yearly" | "pro_monthly" | "pro_yearly" | "team_monthly" | "team_yearly";
   const query = useQuery({ queryKey: ["billing", "status"], queryFn: billingApi.status });
   const checkout = useMutation({
-    mutationFn: () =>
+    mutationFn: (selection: { tier: PlanTier; cycle: BillingCycle }) =>
       billingApi.checkout({
-        plan: checkoutPlan,
+        plan: `${selection.tier}_${selection.cycle}` as
+          | "founders_monthly"
+          | "founders_yearly"
+          | "pro_monthly"
+          | "pro_yearly"
+          | "team_monthly"
+          | "team_yearly",
         success_url: `${window.location.origin}/billing`,
         cancel_url: `${window.location.origin}/billing`,
       }),
@@ -80,6 +85,7 @@ export function BillingPage() {
   if (!query.data) return <ErrorState message="Failed to load billing status." />;
   const data = query.data;
   const normalizedStatus = (data.status ?? "unknown").toLowerCase();
+  const statusLabel = normalizedStatus === "trailing" ? "trialing" : normalizedStatus;
   const statusTone =
     normalizedStatus === "active"
       ? "subscribed"
@@ -93,6 +99,7 @@ export function BillingPage() {
               ? "inactive"
               : "unknown";
   const isTrialStatus = normalizedStatus === "trialing" || normalizedStatus === "trailing";
+  const isPaidSubscription = normalizedStatus === "active";
   const isSubscribed = normalizedStatus === "active" || isTrialStatus;
   const isActiveSubscription = normalizedStatus === "active";
   const isPendingCancel = Boolean(data.cancel_at_period_end);
@@ -104,16 +111,22 @@ export function BillingPage() {
   const currentPlanCycle: BillingCycle | null = data.plan === "monthly" || data.plan === "yearly" ? data.plan : null;
   const foundersAvailable = Boolean(data.founders_available ?? true);
   const foundersUnavailableForUser = !foundersAvailable && currentTier !== "founders";
-  const isCurrentSelection = isSubscribed && currentTier === tier && currentPlanCycle === plan;
-  const isPlanSwitch = isSubscribed && !isCurrentSelection;
-  const selectionLabel = `${PLAN_DETAILS[tier].name} (${plan})`;
-  const isSelectedFoundersUnavailable = foundersUnavailableForUser && tier === "founders";
-  const canCheckout = !isCurrentSelection && !isSelectedFoundersUnavailable;
-  const checkoutButtonLabel = isCurrentSelection
-    ? "Current Plan Selected"
-    : isPlanSwitch
-      ? `Switch to ${PLAN_DETAILS[tier].name}`
-      : `Start ${PLAN_DETAILS[tier].name}`;
+  const selectionLabel = pendingPlan ? `${PLAN_DETAILS[pendingPlan.tier].name} (${pendingPlan.cycle})` : null;
+  const currentTierRank: Record<PlanTier, number> = { founders: 1, pro: 2, team: 3 };
+
+  const handlePlanAction = (targetTier: PlanTier) => {
+    const target = { tier: targetTier, cycle: plan };
+    const isCurrentPlan = isSubscribed && currentTier === targetTier && currentPlanCycle === plan;
+    const isFoundersUnavailable = foundersUnavailableForUser && targetTier === "founders";
+    if (isCurrentPlan || isFoundersUnavailable) return;
+
+    setPendingPlan(target);
+    if (isPaidSubscription) {
+      setShowSwitchDialog(true);
+      return;
+    }
+    checkout.mutate(target);
+  };
 
   return (
     <div className="max-w-5xl space-y-md">
@@ -125,7 +138,7 @@ export function BillingPage() {
       <Card className="space-y-md">
         <div className="flex flex-wrap items-center justify-between gap-sm">
           <h2 className="text-h2">Current Subscription</h2>
-          <Badge status={statusTone} label={normalizedStatus} />
+          <Badge status={statusTone} label={statusLabel} />
         </div>
         <div className="grid gap-md sm:grid-cols-3">
           <div className="rounded-md border border-border bg-background px-lg py-md">
@@ -134,7 +147,7 @@ export function BillingPage() {
           </div>
           <div className="rounded-md border border-border bg-background px-lg py-md">
             <p className="text-small text-text-secondary">Subscription Status</p>
-            <p className="text-h2 capitalize">{normalizedStatus}</p>
+            <p className="text-h2 capitalize">{statusLabel}</p>
             {isTrialStatus ? (
               <p className="text-small text-warning">
                 {typeof data.trial_days_left === "number" ? `${data.trial_days_left} day(s) left in trial.` : "Trial active."}
@@ -210,16 +223,34 @@ export function BillingPage() {
         <div className="grid gap-md lg:grid-cols-3">
           {(["founders", "pro", "team"] as PlanTier[]).map((planTierOption) => {
             const details = PLAN_DETAILS[planTierOption];
-            const isCurrentCard = currentTier === planTierOption && isSubscribed;
-            const isSelectedCard = tier === planTierOption;
+            const isCurrentPaidCard = currentTier === planTierOption && isPaidSubscription;
+            const isCurrentTrialCard = currentTier === planTierOption && isTrialStatus;
             const isFoundersCardUnavailable = foundersUnavailableForUser && planTierOption === "founders";
+            const isSameTierDifferentCycle = isSubscribed && currentTier === planTierOption && currentPlanCycle !== plan;
+            const isUpgrade =
+              isSubscribed && currentTier ? currentTierRank[planTierOption] > currentTierRank[currentTier] : false;
+            const actionLabel = isCurrentPaidCard
+              ? "Current Plan"
+              : isFoundersCardUnavailable
+                ? "Unavailable"
+                : !isSubscribed
+                  ? `Start ${details.name}`
+                  : isCurrentTrialCard && currentPlanCycle === plan
+                    ? `Activate ${details.name}`
+                  : isSameTierDifferentCycle
+                    ? `Switch to ${plan}`
+                    : isUpgrade
+                      ? `Upgrade to ${details.name}`
+                      : `Downgrade to ${details.name}`;
+            const isPlanActionLoading =
+              checkout.isPending && pendingPlan?.tier === planTierOption && pendingPlan?.cycle === plan;
             return (
               <article
                 key={planTierOption}
-                className={`rounded-md border px-md py-md ${
-                  isCurrentCard
+                className={`flex h-full flex-col rounded-md border px-md py-md ${
+                  isCurrentPaidCard
                     ? "border-success/40 bg-success/5"
-                    : isSelectedCard
+                    : pendingPlan?.tier === planTierOption
                       ? "border-primary/50 ring-2 ring-primary/20"
                       : "border-border bg-background"
                 }`}
@@ -229,54 +260,29 @@ export function BillingPage() {
                   <p className="text-h2">{formatCurrency(plan === "monthly" ? details.monthlyPrice : details.yearlyPrice)}</p>
                   <p className="text-small text-text-secondary">{plan === "monthly" ? "per month" : "per year (2 months free)"}</p>
                   {details.tagline ? <Badge status={planTierOption === "founders" ? "soon" : "trialing"} label={details.tagline} /> : null}
-                  {isCurrentCard ? <Badge status="subscribed" label="Current Plan" /> : null}
+                  {isCurrentPaidCard ? <Badge status="subscribed" label="Current Plan" /> : null}
+                  {isCurrentTrialCard ? <Badge status="trialing" label="Trial Plan" /> : null}
                 </div>
-                <ul className="mt-sm space-y-xs text-small text-text-secondary">
+                <ul className="mt-sm min-h-[7.5rem] space-y-xs text-small text-text-secondary">
                   {details.features.map((feature) => (
                     <li key={feature}>{feature}</li>
                   ))}
                 </ul>
                 <Button
-                  className="mt-sm w-full"
-                  variant={isSelectedCard ? "primary" : "secondary"}
-                  disabled={isFoundersCardUnavailable}
-                  onClick={() => setTier(planTierOption)}
+                  className="mt-auto w-full"
+                  variant={isCurrentPaidCard ? "secondary" : "primary"}
+                  disabled={isCurrentPaidCard || isFoundersCardUnavailable}
+                  isLoading={isPlanActionLoading}
+                  onClick={() => handlePlanAction(planTierOption)}
                 >
-                  {isCurrentCard ? "Current Plan" : isSelectedCard ? "Selected" : `Select ${details.name}`}
+                  {actionLabel}
                 </Button>
               </article>
             );
           })}
         </div>
       </Card>
-
-      <Card className="space-y-md">
-        <h2 className="text-h2">Checkout</h2>
-        <p className="text-small text-text-secondary">
-          {isPlanSwitch
-            ? `Switch from ${formatSubscriptionLabel(currentTier, currentPlanCycle)} to ${selectionLabel}.`
-            : `Proceed with ${selectionLabel}.`}
-        </p>
-        {isSelectedFoundersUnavailable ? (
-          <Alert tone="warning" message="Founders plan is unavailable for new subscriptions. Please choose Pro or Team." />
-        ) : null}
-        {checkout.isError ? <Alert tone="danger" message="Could not start checkout." /> : null}
-        <Button
-          className="w-full sm:w-auto"
-          disabled={!canCheckout}
-          isLoading={checkout.isPending}
-          onClick={() => {
-            if (isPlanSwitch) {
-              setShowSwitchDialog(true);
-              return;
-            }
-            checkout.mutate();
-          }}
-        >
-          {checkoutButtonLabel}
-        </Button>
-        {isCurrentSelection ? <Alert tone="info" message="You are already on this plan and billing cycle." /> : null}
-      </Card>
+      {checkout.isError ? <Alert tone="danger" message="Could not start checkout." /> : null}
 
       <ConfirmAlertDialog
         open={showCancelDialog}
@@ -298,13 +304,17 @@ export function BillingPage() {
         open={showSwitchDialog}
         title="Change Plan"
         tone="warning"
-        message={`You are switching from ${currentTier ?? "current"} (${currentPlanCycle ?? "current"}) to ${selectionLabel}.`}
+        message={`You are switching from ${formatSubscriptionLabel(currentTier, currentPlanCycle)} to ${selectionLabel ?? "the selected plan"}.`}
         confirmLabel="Confirm Plan Change"
         cancelLabel="Keep Current Plan"
         isLoading={checkout.isPending}
-        onClose={() => setShowSwitchDialog(false)}
+        onClose={() => {
+          setShowSwitchDialog(false);
+          setPendingPlan(null);
+        }}
         onConfirm={() => {
-          checkout.mutate(undefined, {
+          if (!pendingPlan) return;
+          checkout.mutate(pendingPlan, {
             onSuccess: () => setShowSwitchDialog(false),
           });
         }}
