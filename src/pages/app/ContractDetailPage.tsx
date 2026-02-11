@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { contractsApi } from "@/api/contracts";
+import { billingApi } from "@/api/billing";
 import { Alert } from "@/components/primitives/Alert";
 import { Card } from "@/components/primitives/Card";
 import { Badge } from "@/components/primitives/Badge";
@@ -20,6 +21,8 @@ export function ContractDetailPage() {
   const [showDelete, setShowDelete] = useState(false);
 
   const query = useQuery({ queryKey: ["contracts", id], queryFn: () => contractsApi.get(id!), enabled: Boolean(id) });
+  const billingQuery = useQuery({ queryKey: ["billing", "status"], queryFn: billingApi.status, retry: false });
+  const readOnlyMode = Boolean(billingQuery.data?.read_only_mode);
 
   const update = useMutation({
     mutationFn: (payload: {
@@ -71,6 +74,7 @@ export function ContractDetailPage() {
         <h2 className="mb-md text-h2">Edit Contract</h2>
         <form className="space-y-md" onSubmit={(e) => {
           e.preventDefault();
+          if (readOnlyMode) return;
           update.reset();
           const fd = new FormData(e.currentTarget);
           const renewalType = String(fd.get("renewal_type")) as (typeof RENEWAL_TYPES)[number];
@@ -83,6 +87,12 @@ export function ContractDetailPage() {
             notice_period_days: Number(fd.get("notice_period_days")),
           });
         }}>
+          {readOnlyMode ? (
+            <Alert
+              tone="warning"
+              message={`Trial expired. Account is read-only${typeof billingQuery.data?.grace_days_left === "number" ? ` (${billingQuery.data.grace_days_left} grace day(s) left)` : ""}. Upgrade to edit contracts.`}
+            />
+          ) : null}
           <Select
             label="Renewal Type"
             name="renewal_type"
@@ -98,8 +108,8 @@ export function ContractDetailPage() {
           {update.isSuccess ? <Alert tone="success" message="Contract updated successfully." /> : null}
           {update.isError ? <Alert tone="danger" message="Failed to update contract." /> : null}
           <div className="flex gap-sm">
-            <Button isLoading={update.isPending}>Save</Button>
-            <Button type="button" variant="danger" onClick={() => setShowDelete(true)}>Delete Contract</Button>
+            <Button isLoading={update.isPending} disabled={readOnlyMode}>Save</Button>
+            <Button type="button" variant="danger" disabled={readOnlyMode} onClick={() => setShowDelete(true)}>Delete Contract</Button>
           </div>
         </form>
       </Card>

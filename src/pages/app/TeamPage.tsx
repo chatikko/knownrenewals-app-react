@@ -68,10 +68,11 @@ export function TeamPage() {
 
   const members = membersQuery.data.items;
   const planTier = (billingQuery.data?.plan_tier ?? "pro").toLowerCase();
+  const readOnlyMode = Boolean(billingQuery.data?.read_only_mode);
   const seatLimit = PLAN_SEATS[planTier] ?? PLAN_SEATS.pro;
   const seatsUsed = members.length;
   const seatsRemaining = Math.max(0, seatLimit - seatsUsed);
-  const addDisabled = createMutation.isPending || seatsRemaining <= 0;
+  const addDisabled = createMutation.isPending || seatsRemaining <= 0 || readOnlyMode;
 
   return (
     <div className="space-y-lg">
@@ -100,12 +101,19 @@ export function TeamPage() {
 
       <Card className="space-y-md">
         <h2 className="text-h2">Add Member</h2>
+        {readOnlyMode ? (
+          <Alert
+            tone="warning"
+            message={`Trial expired. Account is read-only${typeof billingQuery.data?.grace_days_left === "number" ? ` (${billingQuery.data.grace_days_left} grace day(s) left)` : ""}. Upgrade to manage team members.`}
+          />
+        ) : null}
         {createMutation.isError ? <Alert tone="danger" message={parseError(createMutation.error, "Could not add member.")} /> : null}
         {seatsRemaining <= 0 ? <Alert tone="warning" message="Seat limit reached for your current plan." /> : null}
         <form
           className="grid gap-sm sm:grid-cols-3"
           onSubmit={(event) => {
             event.preventDefault();
+            if (readOnlyMode) return;
             createMutation.mutate({ email, password, is_admin: isAdmin });
           }}
         >
@@ -148,6 +156,7 @@ export function TeamPage() {
                 render: (item) => (
                   <Button
                     variant="secondary"
+                    disabled={readOnlyMode}
                     isLoading={removeLoadingId === item.id}
                     onClick={() => removeMutation.mutate(item.id)}
                   >

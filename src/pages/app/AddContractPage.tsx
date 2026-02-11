@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contractsApi } from "@/api/contracts";
+import { billingApi } from "@/api/billing";
 import { Alert } from "@/components/primitives/Alert";
 import { Card } from "@/components/primitives/Card";
 import { Input } from "@/components/primitives/Input";
@@ -25,6 +27,7 @@ type Form = z.infer<typeof schema>;
 export function AddContractPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const billingQuery = useQuery({ queryKey: ["billing", "status"], queryFn: billingApi.status, retry: false });
   const form = useForm<Form>({
     resolver: zodResolver(schema),
     mode: "onChange",
@@ -46,13 +49,21 @@ export function AddContractPage() {
       navigate("/contracts");
     },
   });
+  const readOnlyMode = Boolean(billingQuery.data?.read_only_mode);
 
   return (
     <Card className="max-w-2xl">
       <h1 className="mb-lg text-h1">Add Contract</h1>
+      {readOnlyMode ? (
+        <Alert
+          tone="warning"
+          message={`Trial expired. Account is read-only${typeof billingQuery.data?.grace_days_left === "number" ? ` (${billingQuery.data.grace_days_left} grace day(s) left)` : ""}. Upgrade to add contracts.`}
+        />
+      ) : null}
       <form
         className="space-y-md"
-        onSubmit={form.handleSubmit((values) =>
+        onSubmit={form.handleSubmit((values) => {
+          if (readOnlyMode) return;
           mutation.mutate({
             vendor_name: values.vendor_name,
             renewal_type: values.renewal_type,
@@ -61,8 +72,8 @@ export function AddContractPage() {
             renewal_date: values.renewal_date,
             notice_period_days: values.notice_period_days,
             owner_email: values.owner_email,
-          }),
-        )}
+          });
+        })}
       >
         <Input required label="Vendor Name" {...form.register("vendor_name")} error={form.formState.errors.vendor_name?.message} />
         <Select
@@ -81,7 +92,7 @@ export function AddContractPage() {
         />
         <Input required label="Owner Email" {...form.register("owner_email")} error={form.formState.errors.owner_email?.message} />
         {mutation.isError ? <Alert tone="danger" message="Could not save contract." /> : null}
-        <Button isLoading={mutation.isPending}>Save Contract</Button>
+        <Button isLoading={mutation.isPending} disabled={readOnlyMode}>Save Contract</Button>
       </form>
     </Card>
   );

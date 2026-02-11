@@ -46,18 +46,23 @@ export function AppShell() {
   const billingState = (() => {
     if (billingStatus.isLoading) return { label: "Checking Billing", tone: "unknown" as const };
     if (billingStatus.isError || !billingStatus.data) return { label: "Billing Unknown", tone: "unknown" as const };
-    const isTrialing = billingStatus.data.status === "trialing" || billingStatus.data.status === "trailing";
     const trialDaysLeft = billingStatus.data.trial_days_left;
+    const graceDaysLeft = billingStatus.data.grace_days_left;
+    const normalizedStatus = billingStatus.data.status === "trailing" ? "trialing" : billingStatus.data.status;
+    if (billingStatus.data.read_only_mode) {
+      return {
+        label:
+          typeof graceDaysLeft === "number"
+            ? `Read-only (${graceDaysLeft}d grace)`
+            : "Read-only (Trial expired)",
+        tone: "past_due" as const,
+      };
+    }
 
-    switch (billingStatus.data.status) {
+    switch (normalizedStatus) {
       case "active":
         return { label: "Subscribed", tone: "subscribed" as const };
       case "trialing":
-        return {
-          label: typeof trialDaysLeft === "number" ? `Trialing (${trialDaysLeft}d left)` : "Trialing",
-          tone: "trialing" as const,
-        };
-      case "trailing":
         return {
           label: typeof trialDaysLeft === "number" ? `Trialing (${trialDaysLeft}d left)` : "Trialing",
           tone: "trialing" as const,

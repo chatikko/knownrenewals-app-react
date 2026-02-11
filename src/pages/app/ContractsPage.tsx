@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useRef, useState, type ChangeEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { contractsApi } from "@/api/contracts";
+import { billingApi } from "@/api/billing";
 import { Button } from "@/components/primitives/Button";
 import { Card } from "@/components/primitives/Card";
 import { Table } from "@/components/primitives/Table";
@@ -67,6 +68,8 @@ export function ContractsPage() {
   const [importing, setImporting] = useState(false);
   const [message, setMessage] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
   const query = useQuery({ queryKey: ["contracts"], queryFn: contractsApi.list });
+  const billingQuery = useQuery({ queryKey: ["billing", "status"], queryFn: billingApi.status, retry: false });
+  const readOnlyMode = Boolean(billingQuery.data?.read_only_mode);
   if (query.isLoading) return <LoadingState />;
   if (query.isError) return <ErrorState message="Failed to load contracts." />;
   if (!query.data) return <EmptyState message="No contracts found." />;
@@ -110,6 +113,10 @@ export function ContractsPage() {
   };
 
   const onImportFile = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (readOnlyMode) {
+      event.target.value = "";
+      return;
+    }
     const file = event.target.files?.[0];
     if (!file) return;
     setMessage(null);
@@ -180,15 +187,21 @@ export function ContractsPage() {
           <Button variant="secondary" onClick={downloadTemplate}>
             Download Template
           </Button>
-          <Button variant="secondary" isLoading={importing} onClick={() => fileInputRef.current?.click()}>
+          <Button variant="secondary" isLoading={importing} disabled={readOnlyMode} onClick={() => fileInputRef.current?.click()}>
             Import CSV
           </Button>
           <Button variant="secondary" onClick={downloadCsv}>
             Export CSV
           </Button>
-          <Link to="/contracts/new"><Button>Add Contract</Button></Link>
+          <Link to="/contracts/new"><Button disabled={readOnlyMode}>Add Contract</Button></Link>
         </div>
       </div>
+      {readOnlyMode ? (
+        <Alert
+          tone="warning"
+          message={`Trial expired. Account is read-only${typeof billingQuery.data?.grace_days_left === "number" ? ` (${billingQuery.data.grace_days_left} grace day(s) left)` : ""}. Upgrade to create or import contracts.`}
+        />
+      ) : null}
       {message ? <Alert tone={message.tone} message={message.text} /> : null}
       {!data.items.length ? <EmptyState message="No contracts found." /> : (
         <Card className="p-0">

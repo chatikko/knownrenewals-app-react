@@ -86,6 +86,9 @@ export function BillingPage() {
   const data = query.data;
   const normalizedStatus = (data.status ?? "unknown").toLowerCase();
   const statusLabel = normalizedStatus === "trailing" ? "trialing" : normalizedStatus;
+  const readOnlyMode = Boolean(data.read_only_mode);
+  const trialExpired = Boolean(data.trial_expired);
+  const graceDaysLeft = data.grace_days_left;
   const statusTone =
     normalizedStatus === "active"
       ? "subscribed"
@@ -116,9 +119,9 @@ export function BillingPage() {
 
   const handlePlanAction = (targetTier: PlanTier) => {
     const target = { tier: targetTier, cycle: plan };
-    const isCurrentPlan = isSubscribed && currentTier === targetTier && currentPlanCycle === plan;
+    const isCurrentPaidPlan = isPaidSubscription && currentTier === targetTier && currentPlanCycle === plan;
     const isFoundersUnavailable = foundersUnavailableForUser && targetTier === "founders";
-    if (isCurrentPlan || isFoundersUnavailable) return;
+    if (isCurrentPaidPlan || isFoundersUnavailable) return;
 
     setPendingPlan(target);
     if (isPaidSubscription) {
@@ -133,6 +136,15 @@ export function BillingPage() {
       <div className="space-y-xs">
         <h1 className="text-h1">Billing</h1>
         <p className="text-small text-text-secondary">Manage your subscription, compare plans, and switch anytime.</p>
+        {readOnlyMode ? (
+          <Alert
+            tone="warning"
+            message={`Trial expired. Your account is in read-only mode${typeof graceDaysLeft === "number" ? ` (${graceDaysLeft} grace day(s) left)` : ""}. Upgrade now to restore editing.`}
+          />
+        ) : null}
+        {trialExpired && !readOnlyMode ? (
+          <Alert tone="danger" message="Trial and grace period ended. Upgrade to regain access." />
+        ) : null}
       </div>
 
       <Card className="space-y-md">
