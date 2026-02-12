@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "ssg": "vite build",
-    "build": "tsc -b && vite build && node scripts/postbuild.mjs",
+    "build": "tsc -b && vite build && vite build --ssr src/ssg/render.tsx --outDir dist-ssr && node scripts/postbuild.mjs && node scripts/prerender.mjs",
     "preview": "vite preview",
     "preview-dist": "npx serve dist",
     "typecheck": "tsc --noEmit",
