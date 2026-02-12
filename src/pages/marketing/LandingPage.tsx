@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, ChevronRight, Github, Linkedin, Menu, Twitter } from "lucide-react";
 
 export function LandingPage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-700">
       <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/75 backdrop-blur-xl">
@@ -15,7 +18,7 @@ export function LandingPage() {
             <a href="#pricing" className="hover:text-slate-900">
               Pricing
             </a>
-            <Link to="/login" className="hover:text-slate-900">
+            <Link to="/login" reloadDocument className="hover:text-slate-900">
               Login
             </Link>
           </nav>
@@ -23,16 +26,46 @@ export function LandingPage() {
           <div className="hidden md:block">
             <Link
               to="/signup"
+              reloadDocument
               className="inline-flex items-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 active:scale-95"
             >
               Get Started
             </Link>
           </div>
 
-          <button type="button" className="inline-flex rounded-lg border border-slate-200 p-2 text-slate-600 md:hidden">
+          <button
+            type="button"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-nav"
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            className="inline-flex rounded-lg border border-slate-200 p-2 text-slate-600 md:hidden"
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
+          >
             <Menu className="h-4 w-4" />
           </button>
         </div>
+        {isMobileMenuOpen ? (
+          <div id="mobile-nav" className="border-t border-slate-200 bg-white px-4 py-3 md:hidden sm:px-6">
+            <nav className="flex flex-col gap-3 text-sm text-slate-700">
+              <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-slate-900">
+                Features
+              </a>
+              <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-slate-900">
+                Pricing
+              </a>
+              <Link to="/login" reloadDocument className="hover:text-slate-900">
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                reloadDocument
+                className="inline-flex w-fit items-center rounded-xl bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700"
+              >
+                Get Started
+              </Link>
+            </nav>
+          </div>
+        ) : null}
       </header>
 
       <main className="mx-auto w-full max-w-7xl space-y-16 px-4 py-12 sm:px-6 lg:px-8">
@@ -48,6 +81,7 @@ export function LandingPage() {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 to="/signup"
+                reloadDocument
                 className="inline-flex items-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 active:scale-95"
               >
                 Start Tracking Renewals
@@ -175,7 +209,7 @@ export function LandingPage() {
                 <li>Email reminders</li>
                 <li>CSV import &amp; export</li>
               </ul>
-              <Link to="/signup" className="mt-6 inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
+              <Link to="/signup" reloadDocument className="mt-6 inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
                 Get Founders Plan
               </Link>
             </article>
@@ -189,7 +223,7 @@ export function LandingPage() {
                 <li>Custom reminder schedules</li>
                 <li>Team-wide visibility</li>
               </ul>
-              <Link to="/signup" className="mt-6 inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">
+              <Link to="/signup" reloadDocument className="mt-6 inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">
                 Start Pro Plan
               </Link>
             </article>
@@ -203,7 +237,7 @@ export function LandingPage() {
                 <li>Shared renewal ownership</li>
                 <li>Priority support</li>
               </ul>
-              <Link to="/signup" className="mt-6 inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
+              <Link to="/signup" reloadDocument className="mt-6 inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
                 Start Team Plan
               </Link>
             </article>
@@ -215,6 +249,7 @@ export function LandingPage() {
           <p className="mt-2 text-base text-slate-700">Start tracking your renewals with confidence.</p>
           <Link
             to="/signup"
+            reloadDocument
             className="mt-6 inline-flex items-center rounded-xl bg-emerald-600 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 active:scale-95"
           >
             Get Started with KnowRenewals
