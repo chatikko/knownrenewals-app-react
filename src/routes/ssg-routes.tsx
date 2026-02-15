@@ -1,5 +1,6 @@
 import { useRoutes, type RouteObject } from "react-router-dom";
 import { articles } from "@/content/articles";
+import { SeoSync } from "@/seo/SeoSync";
 import { LandingPage } from "@/pages/marketing/LandingPage";
 import { PrivacyPolicyPage } from "@/pages/marketing/PrivacyPolicyPage";
 import { TermsOfServicePage } from "@/pages/marketing/TermsOfServicePage";
@@ -34,5 +35,11 @@ export const marketingRoutes: RouteObject[] = baseMarketingRoutes;
 export const marketingPaths = new Set(marketingRoutes.map((route) => route.path));
 
 export function SsgRoutes() {
-  return useRoutes(marketingRoutes);
+  const element = useRoutes(marketingRoutes);
+  return (
+    <>
+      <SeoSync />
+      {element}
+    </>
+  );
 }
