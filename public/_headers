@@ -1,0 +1,27 @@
+/login
+  X-Robots-Tag: noindex, nofollow
+
+/signup
+  X-Robots-Tag: noindex, nofollow
+
+/verify-email
+  X-Robots-Tag: noindex, nofollow
+
+/dashboard*
+  X-Robots-Tag: noindex, nofollow
+
+/contracts*
+  X-Robots-Tag: noindex, nofollow
+
+/billing*
+  X-Robots-Tag: noindex, nofollow
+
+/team*
+  X-Robots-Tag: noindex, nofollow
+
+/teams*
+  X-Robots-Tag: noindex, nofollow
+
+/admin*
+  X-Robots-Tag: noindex, nofollow
+

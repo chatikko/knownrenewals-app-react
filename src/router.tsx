@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import { articles } from "@/content/articles";
 import { AppShell } from "@/components/layout/AppShell";
 import { ProtectedRoute } from "@/components/routing/ProtectedRoute";
 import { AdminRoute } from "@/components/routing/AdminRoute";
@@ -9,6 +10,7 @@ import { LandingPage } from "@/pages/marketing/LandingPage";
 import { PrivacyPolicyPage } from "@/pages/marketing/PrivacyPolicyPage";
 import { TermsOfServicePage } from "@/pages/marketing/TermsOfServicePage";
 import { BlogPage } from "@/pages/marketing/BlogPage";
+import { BlogArticlePage } from "@/pages/marketing/BlogArticlePage";
 import { PillarPage } from "@/pages/marketing/PillarPage";
 import { SubscriptionTrackerPage } from "@/pages/marketing/SubscriptionTrackerPage";
 import { ContractManagementPage } from "@/pages/marketing/ContractManagementPage";
@@ -45,6 +47,11 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   { path: "/blog", element: <BlogPage />, errorElement: <ErrorPage /> },
+  ...articles.map((article) => ({
+    path: `/blog/${article.slug}`,
+    element: <BlogArticlePage article={article} />,
+    errorElement: <ErrorPage />,
+  })),
   { path: "/login", element: <LoginPage />, errorElement: <ErrorPage /> },
   { path: "/signup", element: <SignupPage />, errorElement: <ErrorPage /> },
   { path: "/verify-email", element: <VerifyEmailPage />, errorElement: <ErrorPage /> },
@@ -79,6 +86,5 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  { path: "/landing", element: <LandingPage />, errorElement: <ErrorPage /> },
   { path: "*", element: <ErrorPage /> },
 ]);

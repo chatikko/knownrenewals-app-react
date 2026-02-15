@@ -1,0 +1,517 @@
+[
+  {
+    "slug": "how-to-track-subscription-renewals",
+    "title": "How to Track Subscription Renewals Without Spreadsheets",
+    "description": "Learn how to track subscription renewals with clear ownership, reminder schedules, and finance-ready reporting.",
+    "summary": "Set up a repeatable workflow to manage recurring renewals, avoid deadline misses, and improve budget visibility.",
+    "publishedAt": "2026-02-15",
+    "updatedAt": "2026-02-15",
+    "sections": [
+      {
+        "id": "why-spreadsheets-fail",
+        "heading": "Why spreadsheets fail as renewal volume grows",
+        "content": "Manual sheets break when renewals are split across teams. Data staleness, missed owner handoffs, and no reminder automation create avoidable renewal risk.",
+        "bullets": [
+          "No guaranteed reminders before due dates",
+          "Hard to track owner accountability across teams",
+          "Limited visibility into future budget commitments"
+        ]
+      },
+      {
+        "id": "minimum-data-model",
+        "heading": "Build a minimum renewal data model",
+        "content": "Start with a clean record for each subscription so every renewal has complete decision context.",
+        "bullets": [
+          "Vendor, product, billing cycle, and renewal date",
+          "Primary owner and backup owner",
+          "Current cost, prior cost, and notice-period requirements"
+        ]
+      },
+      {
+        "id": "reminder-system",
+        "heading": "Configure reminder windows and escalations",
+        "content": "Use automated reminders at 90, 60, and 30 days. Escalate high-value or high-risk renewals to finance approvers if no action is logged."
+      },
+      {
+        "id": "review-rhythm",
+        "heading": "Run a weekly renewal review rhythm",
+        "content": "A short weekly review keeps renewal decisions moving and prevents last-minute approvals.",
+        "bullets": [
+          "Review renewals due within the next 45 days",
+          "Flag contracts requiring legal or procurement review",
+          "Track decisions: renew, renegotiate, or cancel"
+        ]
+      }
+    ],
+    "faq": [
+      {
+        "question": "What is the best way to track subscription renewals?",
+        "answer": "Use a centralized renewal tracking tool with owner assignment, automated reminders, and shared dashboards."
+      },
+      {
+        "question": "How early should teams review renewals?",
+        "answer": "Most teams should begin at least 60 to 90 days before renewal so they can validate usage and negotiate terms."
+      },
+      {
+        "question": "Can this work for small businesses?",
+        "answer": "Yes. Small teams often benefit the most because they reduce missed deadlines and improve cash planning quickly."
+      }
+    ],
+    "primaryCta": {
+      "label": "Start tracking renewals",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "View renewal software pricing",
+      "to": "/renewal-tracking-software-pricing"
+    }
+  },
+  {
+    "slug": "how-to-manage-saas-renewals",
+    "title": "How to Manage SaaS Renewals Across Finance, IT, and Operations",
+    "description": "A practical SaaS renewal management framework for finance, IT, and operations teams.",
+    "summary": "Standardize SaaS renewal workflows so every department has clear ownership, timing, and approval rules.",
+    "publishedAt": "2026-02-15",
+    "updatedAt": "2026-02-15",
+    "sections": [
+      {
+        "id": "cross-functional-ownership",
+        "heading": "Define cross-functional ownership early",
+        "content": "SaaS renewals involve finance, IT, security, and operations. Assign one business owner and one budget approver per tool to remove ambiguity."
+      },
+      {
+        "id": "renewal-cadence",
+        "heading": "Use a standardized SaaS renewal cadence",
+        "content": "Create a repeatable timeline that every team follows before renewal deadlines.",
+        "bullets": [
+          "90 days: usage and contract review",
+          "60 days: pricing and vendor negotiation",
+          "30 days: final approval and purchase path"
+        ]
+      },
+      {
+        "id": "risk-controls",
+        "heading": "Add risk controls for critical tools",
+        "content": "Critical infrastructure and security subscriptions need stronger escalation rules and backup approvers."
+      },
+      {
+        "id": "dashboard",
+        "heading": "Track progress in one renewal dashboard",
+        "content": "A centralized dashboard lets teams see upcoming SaaS renewals by owner, vendor, and risk level, improving forecasting and governance."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Who should own SaaS renewals?",
+        "answer": "Each SaaS tool should have one business owner and one finance approver to ensure accountability."
+      },
+      {
+        "question": "How do you avoid missed SaaS renewal deadlines?",
+        "answer": "Use automated reminders and escalation workflows with 90/60/30-day checkpoints."
+      },
+      {
+        "question": "Can SaaS renewals and contract renewals be managed together?",
+        "answer": "Yes. A centralized renewal platform can track both SaaS subscriptions and broader vendor contracts."
+      }
+    ],
+    "primaryCta": {
+      "label": "Start SaaS renewal management",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "Compare Excel vs software",
+      "to": "/excel-vs-renewal-tracking-software"
+    }
+  },
+  {
+    "slug": "avoid-missing-renewal-deadlines",
+    "title": "10 Ways to Avoid Missing Renewal Deadlines in Growing Teams",
+    "description": "Use these operational controls to avoid missing contract and subscription renewal deadlines.",
+    "summary": "A practical checklist to reduce renewal risk as your business scales vendors and recurring commitments.",
+    "publishedAt": "2026-02-15",
+    "updatedAt": "2026-02-15",
+    "sections": [
+      {
+        "id": "root-cause",
+        "heading": "Most missed renewals are process failures",
+        "content": "Missed deadlines usually come from fragmented ownership and inconsistent reminder practices, not from lack of effort."
+      },
+      {
+        "id": "top-controls",
+        "heading": "Top operational controls to implement first",
+        "content": "Apply controls that create visibility and accountability before expanding tooling.",
+        "bullets": [
+          "Centralize all renewals in one system",
+          "Assign owner + backup owner per renewal",
+          "Automate reminders and escalation logic",
+          "Review a rolling 45-day window weekly"
+        ]
+      },
+      {
+        "id": "high-value-renewals",
+        "heading": "Treat high-value renewals differently",
+        "content": "Contracts above a defined spend threshold should trigger earlier review, leadership visibility, and approval checkpoints."
+      },
+      {
+        "id": "auditability",
+        "heading": "Create auditable decision trails",
+        "content": "Keep decision notes for renew, cancel, and renegotiate outcomes so finance and operations can improve future cycles."
+      }
+    ],
+    "faq": [
+      {
+        "question": "How can a small team avoid missing renewal deadlines?",
+        "answer": "Centralize renewals, assign clear owners, and use automated reminders with weekly review routines."
+      },
+      {
+        "question": "What reminder schedule works best?",
+        "answer": "A 90/60/30-day reminder cadence is a strong default for most B2B renewals."
+      },
+      {
+        "question": "Should all renewals have escalation rules?",
+        "answer": "At minimum, high-value and high-risk renewals should escalate if no action is recorded."
+      }
+    ],
+    "primaryCta": {
+      "label": "Prevent missed renewals",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "Read renewal software guide",
+      "to": "/renewal-tracking-software"
+    }
+  },
+  {
+    "slug": "subscription-renewal-calendar",
+    "title": "Building a Subscription Renewal Calendar That Actually Works",
+    "description": "Create a subscription renewal calendar that supports finance planning and deadline accountability.",
+    "summary": "Design a renewal calendar that scales with team growth and recurring vendor spend.",
+    "publishedAt": "2026-02-15",
+    "updatedAt": "2026-02-15",
+    "sections": [
+      {
+        "id": "calendar-design",
+        "heading": "Design your calendar around actions, not dates only",
+        "content": "A useful renewal calendar maps decisions and approvals to each date so teams can act before renewals process."
+      },
+      {
+        "id": "calendar-fields",
+        "heading": "Required fields for each calendar item",
+        "content": "Every subscription should include commercial and operational context to support faster decisions.",
+        "bullets": [
+          "Renewal date and billing frequency",
+          "Owner and approver",
+          "Planned decision date and negotiation status"
+        ]
+      },
+      {
+        "id": "team-views",
+        "heading": "Create role-based views",
+        "content": "Finance needs spend visibility, while operators need due dates and owner queues. Split views by persona to reduce noise."
+      },
+      {
+        "id": "maintenance",
+        "heading": "Maintain calendar quality every week",
+        "content": "Do a weekly refresh for new subscriptions, canceled tools, and adjusted renewal dates after vendor changes."
+      }
+    ],
+    "faq": [
+      {
+        "question": "What should a subscription renewal calendar include?",
+        "answer": "Include renewal date, owner, approver, current spend, and status for each item."
+      },
+      {
+        "question": "How often should it be reviewed?",
+        "answer": "A weekly review cadence is recommended for growing teams."
+      },
+      {
+        "question": "Is calendar tracking enough without reminders?",
+        "answer": "No. Automated reminders are needed so owners receive proactive alerts before deadlines."
+      }
+    ],
+    "primaryCta": {
+      "label": "Build your renewal calendar",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "See subscription tracker",
+      "to": "/subscription-renewal-tracker"
+    }
+  },
+  {
+    "slug": "automated-renewal-reminders-for-business",
+    "title": "Automated Renewal Reminders for Business: Setup Guide and Templates",
+    "description": "Set up automated renewal reminders for contracts and subscriptions with reliable escalation templates.",
+    "summary": "Configure reminder workflows that reduce missed deadlines and speed up renewal decisions.",
+    "publishedAt": "2026-02-15",
+    "updatedAt": "2026-02-15",
+    "sections": [
+      {
+        "id": "why-automation",
+        "heading": "Why automated reminders matter",
+        "content": "Reminder automation eliminates dependency on memory and inbox searches, improving renewal consistency."
+      },
+      {
+        "id": "template-cadence",
+        "heading": "Default reminder template",
+        "content": "A standard cadence works for most B2B teams and can be customized by contract value.",
+        "bullets": [
+          "90 days: usage review and intent check",
+          "60 days: negotiation prep",
+          "30 days: approval and purchase decision",
+          "14 days: escalation if unresolved"
+        ]
+      },
+      {
+        "id": "message-design",
+        "heading": "Design reminder messages for action",
+        "content": "Each reminder should include owner, due date, spend context, and expected next action."
+      },
+      {
+        "id": "escalation",
+        "heading": "Add escalation and fallback ownership",
+        "content": "Escalation paths prevent stalled renewals when primary owners are unavailable."
+      }
+    ],
+    "faq": [
+      {
+        "question": "What is a good reminder cadence for renewals?",
+        "answer": "A 90/60/30-day cadence with a 14-day escalation reminder is a strong default."
+      },
+      {
+        "question": "Should all reminders go to finance?",
+        "answer": "No. Route reminders to business owners first, then escalate to finance approvers as needed."
+      },
+      {
+        "question": "Can reminders be customized by contract value?",
+        "answer": "Yes. High-value renewals should trigger earlier and more frequent reminders."
+      }
+    ],
+    "primaryCta": {
+      "label": "Automate renewal reminders",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "View contract reminder system",
+      "to": "/contract-renewal-management-software"
+    }
+  },
+  {
+    "slug": "track-software-license-renewals",
+    "title": "How to Track Software License Renewals and Stay Compliant",
+    "description": "Track software license renewals with compliance-ready processes and renewal visibility.",
+    "summary": "Use a structured process to prevent license expirations and reduce compliance risk.",
+    "publishedAt": "2026-02-15",
+    "updatedAt": "2026-02-15",
+    "sections": [
+      {
+        "id": "license-risk",
+        "heading": "License renewals are a compliance control",
+        "content": "Expired licenses can create operational and legal risk. Tracking renewal status is a core compliance requirement."
+      },
+      {
+        "id": "data-standard",
+        "heading": "Standardize license renewal records",
+        "content": "Each license should include owner, vendor, entitlement scope, expiration date, and renewal conditions."
+      },
+      {
+        "id": "audit-readiness",
+        "heading": "Build audit-ready evidence",
+        "content": "Store reminder logs and decision outcomes so teams can prove renewal oversight during audits."
+      },
+      {
+        "id": "cross-team",
+        "heading": "Align IT and finance for approvals",
+        "content": "IT validates usage and security requirements while finance approves budget and payment timing."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Why is software license renewal tracking important?",
+        "answer": "It helps prevent expired entitlements and supports compliance and audit readiness."
+      },
+      {
+        "question": "Who should own license renewals?",
+        "answer": "IT typically owns technical validation, while finance owns approval and budgeting."
+      },
+      {
+        "question": "What reports should teams keep?",
+        "answer": "Keep upcoming-renewal reports, owner status, and decision logs for each license."
+      }
+    ],
+    "primaryCta": {
+      "label": "Track license renewals",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "See SaaS renewal management",
+      "to": "/saas-renewal-management"
+    }
+  },
+  {
+    "slug": "domain-renewal-reminder-tool",
+    "title": "Choosing a Domain Renewal Reminder Tool for Multi-Brand Companies",
+    "description": "Evaluate domain renewal reminder tools to prevent lapses and protect brand continuity.",
+    "summary": "A domain renewal reminder process helps teams avoid outages and protect brand assets.",
+    "publishedAt": "2026-02-15",
+    "updatedAt": "2026-02-15",
+    "sections": [
+      {
+        "id": "domain-risk",
+        "heading": "Domain lapses are high-impact failures",
+        "content": "Missed domain renewals can disrupt websites, email deliverability, and brand trust."
+      },
+      {
+        "id": "tool-requirements",
+        "heading": "Core requirements for a domain reminder tool",
+        "content": "Choose a tool that supports centralized ownership and robust alert workflows.",
+        "bullets": [
+          "Multi-domain visibility by registrar",
+          "Owner assignment and escalation paths",
+          "Automated reminder windows for expiration dates"
+        ]
+      },
+      {
+        "id": "operations-playbook",
+        "heading": "Create a domain renewal playbook",
+        "content": "Define responsibilities for renewal approval, payment method checks, and post-renewal verification."
+      },
+      {
+        "id": "brand-protection",
+        "heading": "Support brand protection goals",
+        "content": "Treat premium and high-traffic domains as priority assets with earlier review windows."
+      }
+    ],
+    "faq": [
+      {
+        "question": "What should a domain renewal reminder tool include?",
+        "answer": "It should include centralized tracking, reminders, owner assignment, and escalation workflows."
+      },
+      {
+        "question": "How early should domain renewals be reviewed?",
+        "answer": "Most teams should review at least 60 to 90 days in advance, especially for critical domains."
+      },
+      {
+        "question": "Can domain and contract renewals be managed together?",
+        "answer": "Yes. A centralized renewal platform can track domains alongside subscriptions and contracts."
+      }
+    ],
+    "primaryCta": {
+      "label": "Protect domain renewals",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "View renewal platform",
+      "to": "/renewal-tracking-software"
+    }
+  },
+  {
+    "slug": "best-renewal-tracking-software-for-small-business",
+    "title": "Best Renewal Tracking Software for Small Business: Buyer Guide",
+    "description": "Compare the best renewal tracking software options for small business teams and budgets.",
+    "summary": "Use this buyer guide to evaluate features, pricing, and implementation effort before selecting a renewal platform.",
+    "publishedAt": "2026-02-15",
+    "updatedAt": "2026-02-15",
+    "sections": [
+      {
+        "id": "evaluation-criteria",
+        "heading": "Use a clear evaluation scorecard",
+        "content": "Prioritize tools that reduce missed deadlines and support cross-team accountability."
+      },
+      {
+        "id": "must-have-features",
+        "heading": "Must-have features for SMB teams",
+        "content": "The right feature set should improve control without adding operational overhead.",
+        "bullets": [
+          "Automated renewal reminders and escalations",
+          "Owner assignment and renewal dashboard views",
+          "Import/export for migration and reporting"
+        ]
+      },
+      {
+        "id": "cost-analysis",
+        "heading": "Compare total cost, not subscription price only",
+        "content": "Calculate tool cost against avoidable auto-renew waste and missed negotiation opportunities."
+      },
+      {
+        "id": "implementation",
+        "heading": "Plan a fast implementation path",
+        "content": "Start with your highest-value subscriptions and contracts, then expand coverage in weekly batches."
+      }
+    ],
+    "faq": [
+      {
+        "question": "What is the best renewal tracking software for small business?",
+        "answer": "The best option is the one with automation, ownership workflows, and pricing that fits your team size and renewal volume."
+      },
+      {
+        "question": "How do SMBs compare renewal tools?",
+        "answer": "Use a scorecard with reminders, dashboard visibility, reporting, and onboarding complexity."
+      },
+      {
+        "question": "How fast can small teams implement?",
+        "answer": "Most teams can launch in days by importing records and enabling reminder workflows first."
+      }
+    ],
+    "primaryCta": {
+      "label": "Start your free trial",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "See pricing options",
+      "to": "/renewal-tracking-software-pricing"
+    }
+  },
+  {
+    "slug": "contract-expiration-tracking-system",
+    "title": "Contract Expiration Tracking System: What to Automate First",
+    "description": "Learn what to automate first in a contract expiration tracking system for better renewal outcomes.",
+    "summary": "Focus automation on high-impact contract milestones to reduce risk and improve negotiation leverage.",
+    "publishedAt": "2026-02-15",
+    "updatedAt": "2026-02-15",
+    "sections": [
+      {
+        "id": "priority-order",
+        "heading": "Automate the highest-risk milestones first",
+        "content": "Notice periods, expiration dates, and auto-renew clauses should be the first automation targets."
+      },
+      {
+        "id": "owner-workflows",
+        "heading": "Map owner workflows by contract type",
+        "content": "Different contracts need different approval paths. Build workflows by spend tier and risk category."
+      },
+      {
+        "id": "escalation-rules",
+        "heading": "Set escalation rules for stalled decisions",
+        "content": "Escalate contracts lacking owner updates within defined windows so deadlines do not slip."
+      },
+      {
+        "id": "reporting",
+        "heading": "Report renewal pipeline by risk and value",
+        "content": "Dashboards should show upcoming expirations, unresolved decisions, and contracts needing negotiation."
+      }
+    ],
+    "faq": [
+      {
+        "question": "What should be automated first in contract tracking?",
+        "answer": "Start with notice periods, expiration dates, and high-value contracts."
+      },
+      {
+        "question": "How do teams avoid contract auto-renew surprises?",
+        "answer": "Use multi-stage reminders, owner assignments, and escalation workflows."
+      },
+      {
+        "question": "Should contract and subscription tracking be separate?",
+        "answer": "They can be managed together in one renewal platform with shared ownership and reporting."
+      }
+    ],
+    "primaryCta": {
+      "label": "Track contract expirations",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "Explore contract renewal management",
+      "to": "/contract-renewal-management-software"
+    }
+  }
+]

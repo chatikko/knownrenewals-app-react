@@ -1,0 +1,122 @@
+[
+  {
+    "path": "/",
+    "title": "Renewal Tracking Software for Subscriptions, Contracts & SaaS",
+    "description": "Track subscription, contract, SaaS, domain, and license renewals in one dashboard. Automate reminders, avoid missed deadlines, and improve team accountability.",
+    "canonical": "https://knowrenewals.com/",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["Organization", "WebSite", "SoftwareApplication", "FAQPage"],
+    "priority": 1,
+    "changefreq": "weekly",
+    "breadcrumbName": "Home"
+  },
+  {
+    "path": "/renewal-tracking-software",
+    "title": "Renewal Tracking Software for Modern B2B Teams | KnowRenewals",
+    "description": "Learn how to choose renewal tracking software for subscriptions, contracts, SaaS, domain, and license renewals.",
+    "canonical": "https://knowrenewals.com/renewal-tracking-software",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "SoftwareApplication"],
+    "priority": 0.9,
+    "changefreq": "weekly",
+    "breadcrumbName": "Renewal Tracking Software"
+  },
+  {
+    "path": "/subscription-renewal-tracker",
+    "title": "Subscription Renewal Tracker for SMB Teams | KnowRenewals",
+    "description": "How to track subscription renewals with one dashboard, owner workflows, and automated reminder schedules.",
+    "canonical": "https://knowrenewals.com/subscription-renewal-tracker",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.8,
+    "changefreq": "weekly",
+    "breadcrumbName": "Subscription Renewal Tracker"
+  },
+  {
+    "path": "/contract-renewal-management-software",
+    "title": "Contract Renewal Management Software | KnowRenewals",
+    "description": "Track contract notice periods and expiration dates with a contract reminder system designed for B2B teams.",
+    "canonical": "https://knowrenewals.com/contract-renewal-management-software",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.8,
+    "changefreq": "weekly",
+    "breadcrumbName": "Contract Renewal Management Software"
+  },
+  {
+    "path": "/saas-renewal-management",
+    "title": "SaaS Renewal Management for Startups | KnowRenewals",
+    "description": "How to manage SaaS renewals across IT, operations, and finance with one centralized renewal dashboard.",
+    "canonical": "https://knowrenewals.com/saas-renewal-management",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.8,
+    "changefreq": "weekly",
+    "breadcrumbName": "SaaS Renewal Management"
+  },
+  {
+    "path": "/renewal-tracking-software-pricing",
+    "title": "Renewal Tracking Software Pricing | KnowRenewals",
+    "description": "Compare affordable renewal management software pricing and choose a plan for your startup or small business team.",
+    "canonical": "https://knowrenewals.com/renewal-tracking-software-pricing",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "Product"],
+    "priority": 0.8,
+    "changefreq": "weekly",
+    "breadcrumbName": "Renewal Tracking Software Pricing"
+  },
+  {
+    "path": "/excel-vs-renewal-tracking-software",
+    "title": "Excel vs Renewal Tracking Software Comparison | KnowRenewals",
+    "description": "Compare Excel vs renewal tracking software for cost, risk, and scalability across finance and operations teams.",
+    "canonical": "https://knowrenewals.com/excel-vs-renewal-tracking-software",
+    "robots": "index, follow",
+    "ogType": "article",
+    "schemaTypes": ["BreadcrumbList", "Article"],
+    "priority": 0.7,
+    "changefreq": "monthly",
+    "breadcrumbName": "Excel vs Renewal Tracking Software"
+  },
+  {
+    "path": "/blog",
+    "title": "Renewal Management Blog | KnowRenewals",
+    "description": "Read long-tail guides on subscription renewal tracking, SaaS renewals, contract reminders, and renewal operations.",
+    "canonical": "https://knowrenewals.com/blog",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "CollectionPage"],
+    "priority": 0.7,
+    "changefreq": "weekly",
+    "breadcrumbName": "Blog"
+  },
+  {
+    "path": "/privacy-policy",
+    "title": "Privacy Policy | KnowRenewals",
+    "description": "Read the KnowRenewals Privacy Policy to understand how we collect, use, and protect your account and contract renewal data.",
+    "canonical": "https://knowrenewals.com/privacy-policy",
+    "robots": "index, follow",
+    "ogType": "article",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.3,
+    "changefreq": "yearly",
+    "breadcrumbName": "Privacy Policy"
+  },
+  {
+    "path": "/terms-of-service",
+    "title": "Terms of Service | KnowRenewals",
+    "description": "Review the KnowRenewals Terms of Service, including account responsibilities, billing terms, and acceptable use.",
+    "canonical": "https://knowrenewals.com/terms-of-service",
+    "robots": "index, follow",
+    "ogType": "article",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.3,
+    "changefreq": "yearly",
+    "breadcrumbName": "Terms of Service"
+  }
+]

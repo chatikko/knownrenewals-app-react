@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
+Disallow: /login
+Disallow: /signup
+Disallow: /verify-email
+Disallow: /dashboard
+Disallow: /contracts
+Disallow: /billing
+Disallow: /team
+Disallow: /teams
+Disallow: /admin
 
 Sitemap: https://knowrenewals.com/sitemap.xml
