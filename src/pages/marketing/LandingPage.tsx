@@ -106,14 +106,14 @@ export function LandingPage() {
                 Pricing
               </a>
               <Link to="/blog" reloadDocument className="hover:text-slate-900">
-                Blog
+                Guides
               </Link>
               <Link
                 to="/signup"
                 reloadDocument
                 className="inline-flex w-fit items-center rounded-xl bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700"
               >
-                Get Started
+                Start Free Trial
               </Link>
             </nav>
           </div>
@@ -127,8 +127,9 @@ export function LandingPage() {
               Renewal Tracking Software for Subscriptions, Contracts, and SaaS
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
-              KnowRenewals is a renewal management platform that helps startups and small businesses track subscription
-              renewals, contract renewals, software license renewals, and domain renewals in one place.
+              KnowRenewals is renewal tracking software for subscriptions, contracts, and SaaS. It helps startups and
+              small businesses track subscription renewals, contract renewals, software license renewals, and domain
+              renewals in one place.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
@@ -373,7 +374,7 @@ export function LandingPage() {
                 <Link to="/renewal-tracking-software">Renewal management platform</Link>
               </li>
               <li>
-                <Link to="/renewal-tracking-software-pricing">Pricing</Link>
+                <Link to="/renewal-tracking-software-pricing">Pricing plans</Link>
               </li>
             </ul>
           </div>
@@ -382,7 +383,7 @@ export function LandingPage() {
             <p className="text-sm font-semibold text-slate-900">Resources</p>
             <ul className="mt-3 space-y-2 text-sm text-slate-600">
               <li>
-                <Link to="/blog">Blog</Link>
+                <Link to="/blog">Renewal management blog</Link>
               </li>
               <li>
                 <Link to="/excel-vs-renewal-tracking-software">Excel vs software comparison</Link>
@@ -423,4 +424,3 @@ export function LandingPage() {
 }
 
 export default LandingPage;
-
