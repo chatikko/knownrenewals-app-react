@@ -8,6 +8,13 @@ import { VerifyEmailPage } from "@/pages/auth/VerifyEmailPage";
 import { LandingPage } from "@/pages/marketing/LandingPage";
 import { PrivacyPolicyPage } from "@/pages/marketing/PrivacyPolicyPage";
 import { TermsOfServicePage } from "@/pages/marketing/TermsOfServicePage";
+import { BlogPage } from "@/pages/marketing/BlogPage";
+import { PillarPage } from "@/pages/marketing/PillarPage";
+import { SubscriptionTrackerPage } from "@/pages/marketing/SubscriptionTrackerPage";
+import { ContractManagementPage } from "@/pages/marketing/ContractManagementPage";
+import { SaasRenewalPage } from "@/pages/marketing/SaasRenewalPage";
+import { PricingPage } from "@/pages/marketing/PricingPage";
+import { ExcelVsSoftwarePage } from "@/pages/marketing/ExcelVsSoftwarePage";
 import { ErrorPage } from "@/pages/ErrorPage";
 import { DashboardPage } from "@/pages/app/DashboardPage";
 import { ContractsPage } from "@/pages/app/ContractsPage";
@@ -23,6 +30,21 @@ import { AdminBillingEventsPage } from "@/pages/admin/AdminBillingEventsPage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LandingPage />, errorElement: <ErrorPage /> },
+  { path: "/renewal-tracking-software", element: <PillarPage />, errorElement: <ErrorPage /> },
+  { path: "/subscription-renewal-tracker", element: <SubscriptionTrackerPage />, errorElement: <ErrorPage /> },
+  {
+    path: "/contract-renewal-management-software",
+    element: <ContractManagementPage />,
+    errorElement: <ErrorPage />,
+  },
+  { path: "/saas-renewal-management", element: <SaasRenewalPage />, errorElement: <ErrorPage /> },
+  { path: "/renewal-tracking-software-pricing", element: <PricingPage />, errorElement: <ErrorPage /> },
+  {
+    path: "/excel-vs-renewal-tracking-software",
+    element: <ExcelVsSoftwarePage />,
+    errorElement: <ErrorPage />,
+  },
+  { path: "/blog", element: <BlogPage />, errorElement: <ErrorPage /> },
   { path: "/login", element: <LoginPage />, errorElement: <ErrorPage /> },
   { path: "/signup", element: <SignupPage />, errorElement: <ErrorPage /> },
   { path: "/verify-email", element: <VerifyEmailPage />, errorElement: <ErrorPage /> },

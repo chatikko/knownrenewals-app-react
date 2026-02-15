@@ -8,6 +8,13 @@ const ssrDir = path.join(root, "dist-ssr");
 
 const routeToHtmlFile = new Map([
   ["/", "index.html"],
+  ["/renewal-tracking-software", "renewal-tracking-software.html"],
+  ["/subscription-renewal-tracker", "subscription-renewal-tracker.html"],
+  ["/contract-renewal-management-software", "contract-renewal-management-software.html"],
+  ["/saas-renewal-management", "saas-renewal-management.html"],
+  ["/renewal-tracking-software-pricing", "renewal-tracking-software-pricing.html"],
+  ["/excel-vs-renewal-tracking-software", "excel-vs-renewal-tracking-software.html"],
+  ["/blog", "blog.html"],
   ["/privacy-policy", "privacy-policy.html"],
   ["/terms-of-service", "terms-of-service.html"],
 ]);
