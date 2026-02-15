@@ -1,5 +1,55 @@
 [
   {
+    "source": "/landing",
+    "destination": "/",
+    "type": "redirect"
+  },
+  {
+    "source": "/landing/",
+    "destination": "/",
+    "type": "redirect"
+  },
+  {
+    "source": "/",
+    "destination": "/index.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/renewal-tracking-software",
+    "destination": "/renewal-tracking-software.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/subscription-renewal-tracker",
+    "destination": "/subscription-renewal-tracker.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/contract-renewal-management-software",
+    "destination": "/contract-renewal-management-software.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/saas-renewal-management",
+    "destination": "/saas-renewal-management.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/renewal-tracking-software-pricing",
+    "destination": "/renewal-tracking-software-pricing.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/excel-vs-renewal-tracking-software",
+    "destination": "/excel-vs-renewal-tracking-software.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog",
+    "destination": "/blog.html",
+    "type": "rewrite"
+  },
+  {
     "source": "/privacy-policy",
     "destination": "/privacy-policy.html",
     "type": "rewrite"
@@ -10,8 +60,48 @@
     "type": "rewrite"
   },
   {
-    "source": "/",
-    "destination": "/index.html",
+    "source": "/blog/how-to-track-subscription-renewals",
+    "destination": "/blog-how-to-track-subscription-renewals.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/how-to-manage-saas-renewals",
+    "destination": "/blog-how-to-manage-saas-renewals.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/avoid-missing-renewal-deadlines",
+    "destination": "/blog-avoid-missing-renewal-deadlines.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/subscription-renewal-calendar",
+    "destination": "/blog-subscription-renewal-calendar.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/automated-renewal-reminders-for-business",
+    "destination": "/blog-automated-renewal-reminders-for-business.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/track-software-license-renewals",
+    "destination": "/blog-track-software-license-renewals.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/domain-renewal-reminder-tool",
+    "destination": "/blog-domain-renewal-reminder-tool.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/best-renewal-tracking-software-for-small-business",
+    "destination": "/blog-best-renewal-tracking-software-for-small-business.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/contract-expiration-tracking-system",
+    "destination": "/blog-contract-expiration-tracking-system.html",
     "type": "rewrite"
   },
   {
