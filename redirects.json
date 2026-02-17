@@ -45,6 +45,16 @@
     "type": "rewrite"
   },
   {
+    "source": "/slack-renewal-alerts",
+    "destination": "/slack-renewal-alerts.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/slack-alerts-vs-email-reminders",
+    "destination": "/slack-alerts-vs-email-reminders.html",
+    "type": "rewrite"
+  },
+  {
     "source": "/blog",
     "destination": "/blog.html",
     "type": "rewrite"
@@ -102,6 +112,31 @@
   {
     "source": "/blog/contract-expiration-tracking-system",
     "destination": "/blog-contract-expiration-tracking-system.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/how-to-send-renewal-reminders-to-slack",
+    "destination": "/blog-how-to-send-renewal-reminders-to-slack.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/how-to-use-slack-for-contract-renewal-workflows",
+    "destination": "/blog-how-to-use-slack-for-contract-renewal-workflows.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/daily-slack-digest-for-renewal-teams",
+    "destination": "/blog-daily-slack-digest-for-renewal-teams.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/best-slack-channel-setup-for-renewal-alerts",
+    "destination": "/blog-best-slack-channel-setup-for-renewal-alerts.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/blog/reduce-missed-renewals-with-slack-alerts",
+    "destination": "/blog-reduce-missed-renewals-with-slack-alerts.html",
     "type": "rewrite"
   },
   {

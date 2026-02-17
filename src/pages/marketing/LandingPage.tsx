@@ -237,6 +237,10 @@ export function LandingPage() {
                 <Check className="h-4 w-4 text-emerald-600" />
                 Renewal dashboard for teams supports planning and audits
               </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-emerald-600" />
+                Slack renewal alerts improve response speed on risk contracts
+              </li>
             </ul>
           </article>
 
@@ -261,6 +265,15 @@ export function LandingPage() {
               <Link className="block text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software-pricing">
                 Renewal tracking software pricing
               </Link>
+              <Link className="block text-emerald-700 hover:text-emerald-800" to="/slack-renewal-alerts">
+                Slack renewal alerts setup
+              </Link>
+              <Link className="block text-emerald-700 hover:text-emerald-800" to="/slack-alerts-vs-email-reminders">
+                Slack vs email reminders for renewals
+              </Link>
+              <Link className="block text-emerald-700 hover:text-emerald-800" to="/blog/how-to-send-renewal-reminders-to-slack">
+                How to send renewal reminders to Slack
+              </Link>
               <Link className="block text-emerald-700 hover:text-emerald-800" to="/blog">
                 Blog: long-tail renewal management guides
               </Link>
@@ -274,6 +287,9 @@ export function LandingPage() {
             <p className="text-sm text-slate-600">
               Choose the best subscription renewal software plan based on team size and renewal volume.
             </p>
+            <p className="text-sm text-slate-600">
+              Slack alerts are included across plans: Founders includes daily digest, and Pro/Team include instant risk alerts.
+            </p>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
@@ -284,6 +300,7 @@ export function LandingPage() {
                 <li>Up to 25 renewals</li>
                 <li>1 user</li>
                 <li>Email reminders</li>
+                <li>Slack daily digest alerts</li>
                 <li>CSV import and export</li>
               </ul>
               <Link
@@ -302,6 +319,7 @@ export function LandingPage() {
                 <li>Unlimited renewals</li>
                 <li>Up to 5 users</li>
                 <li>Custom reminder schedules</li>
+                <li>Slack daily digest + instant risk alerts</li>
                 <li>Team-wide visibility</li>
               </ul>
               <Link
@@ -320,6 +338,7 @@ export function LandingPage() {
                 <li>Up to 15 users</li>
                 <li>Role-based access</li>
                 <li>Shared renewal ownership</li>
+                <li>Full Slack alerting workflow</li>
                 <li>Priority support</li>
               </ul>
               <Link

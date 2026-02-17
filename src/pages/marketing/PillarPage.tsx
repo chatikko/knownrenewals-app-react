@@ -33,6 +33,13 @@ export function PillarPage() {
           Look for automated renewal reminders, shared ownership, audit-ready history, and reporting that supports
           recurring payment planning across teams.
         </p>
+        <p className="text-sm text-slate-600">
+          Teams that coordinate in channels can use{" "}
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-renewal-alerts">
+            Slack renewal alerts
+          </Link>{" "}
+          to improve response speed on risk renewals.
+        </p>
         <h3 className="text-lg font-semibold text-slate-900">Validate cost against avoidable waste</h3>
         <p className="text-sm text-slate-600">
           Compare software cost against fees from missed deadlines, unreviewed auto-renewals, and avoidable price
@@ -52,6 +59,12 @@ export function PillarPage() {
           <Link className="text-emerald-700 hover:text-emerald-800" to="/blog">
             Read implementation guides
           </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-renewal-alerts">
+            Explore Slack renewal alerts
+          </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-alerts-vs-email-reminders">
+            Review Slack vs email reminders
+          </Link>
         </div>
       </section>
     </SeoPageLayout>
@@ -59,4 +72,3 @@ export function PillarPage() {
 }
 
 export default PillarPage;
-

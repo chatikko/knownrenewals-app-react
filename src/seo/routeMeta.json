@@ -84,6 +84,30 @@
     "breadcrumbName": "Excel vs Renewal Tracking Software"
   },
   {
+    "path": "/slack-renewal-alerts",
+    "title": "Slack Renewal Alerts for Teams | KnowRenewals",
+    "description": "Send daily digest and instant risk renewal alerts to Slack so finance, ops, and IT teams act before renewal deadlines.",
+    "canonical": "https://knowrenewals.com/slack-renewal-alerts",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.8,
+    "changefreq": "weekly",
+    "breadcrumbName": "Slack Renewal Alerts"
+  },
+  {
+    "path": "/slack-alerts-vs-email-reminders",
+    "title": "Slack Alerts vs Email Reminders for Renewals | KnowRenewals",
+    "description": "Compare Slack alerts and email reminders for renewal management speed, ownership, and deadline coverage.",
+    "canonical": "https://knowrenewals.com/slack-alerts-vs-email-reminders",
+    "robots": "index, follow",
+    "ogType": "article",
+    "schemaTypes": ["BreadcrumbList", "Article"],
+    "priority": 0.7,
+    "changefreq": "monthly",
+    "breadcrumbName": "Slack vs Email Reminders"
+  },
+  {
     "path": "/blog",
     "title": "Renewal Management Blog | KnowRenewals",
     "description": "Read long-tail guides on subscription renewal tracking, SaaS renewals, contract reminders, and renewal operations.",

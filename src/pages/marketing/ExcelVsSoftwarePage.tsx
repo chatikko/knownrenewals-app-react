@@ -17,12 +17,24 @@ export function ExcelVsSoftwarePage() {
         <li>Automated renewal reminders for each due date</li>
         <li>Shared ownership and clear accountability</li>
         <li>Centralized renewal dashboard for teams</li>
+        <li>Slack renewal alerts for real-time follow-up and escalation</li>
         <li>Faster reporting for finance and audits</li>
       </ul>
       <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Bottom line</h2>
       <p className="text-sm leading-relaxed text-slate-600">
         If your team is managing recurring payments and renewals across subscriptions, contracts, and licenses,
         software is usually lower risk and lower total cost than manual tracking.
+      </p>
+      <p className="text-sm text-slate-600">
+        For collaboration-heavy teams, compare{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-alerts-vs-email-reminders">
+          Slack vs email reminders
+        </Link>{" "}
+        and review the{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-renewal-alerts">
+          Slack renewal alerts workflow
+        </Link>
+        .
       </p>
       <p className="text-sm text-slate-600">
         Continue with{" "}
@@ -40,4 +52,3 @@ export function ExcelVsSoftwarePage() {
 }
 
 export default ExcelVsSoftwarePage;
-

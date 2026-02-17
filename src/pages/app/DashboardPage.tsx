@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import { contractsApi } from "@/api/contracts";
+import { integrationsApi } from "@/api/integrations";
 import { Card } from "@/components/primitives/Card";
 import { Table } from "@/components/primitives/Table";
 import { EmptyState, ErrorState, LoadingState } from "@/components/QueryState";
@@ -26,6 +29,13 @@ function StatusBadge({ status }: { status: ContractBadgeStatus }) {
 
 export function DashboardPage() {
   const query = useQuery({ queryKey: ["contracts"], queryFn: contractsApi.list });
+  const slackStatusQuery = useQuery({
+    queryKey: ["integrations", "slack", "status", "dashboard"],
+    queryFn: integrationsApi.getSlackStatus,
+    retry: false,
+    staleTime: 60_000,
+  });
+
   if (query.isLoading) return <LoadingState />;
   if (query.isError) return <ErrorState message="Failed to load dashboard." />;
   if (!query.data || !query.data.items.length) return <EmptyState message="No contracts available yet." />;
@@ -35,6 +45,10 @@ export function DashboardPage() {
   const soonCount = data.items.filter((item) => item.status === "soon").length;
   const riskCount = data.items.filter((item) => item.status === "risk").length;
   const ratio = (count: number) => `${Math.max(6, Math.round((count / total) * 100))}%`;
+  const slackStatusCode = axios.isAxiosError(slackStatusQuery.error) ? slackStatusQuery.error.response?.status : undefined;
+  const hideSlackCard = slackStatusCode === 403 || slackStatusCode === 404;
+  const showSlackCard = slackStatusQuery.isSuccess && !hideSlackCard;
+  const slackConnected = Boolean(slackStatusQuery.data?.connected);
 
   return (
     <div className="space-y-lg">
@@ -68,6 +82,38 @@ export function DashboardPage() {
       <Card className="border-warning/30 bg-gradient-to-r from-warning/10 to-warning/5 text-warning">
         <span className="font-medium">{soonCount + riskCount}</span> contracts need action in next 30 days
       </Card>
+
+      {showSlackCard ? (
+        <Card className="border-border bg-gradient-to-r from-primary/10 to-surface shadow-sm">
+          <h2 className="text-body font-semibold text-text-primary">Slack renewal alerts</h2>
+          {slackConnected ? (
+            <>
+              <p className="mt-xs text-small text-text-secondary">
+                Slack alerts active{slackStatusQuery.data?.default_channel_name ? ` in #${slackStatusQuery.data.default_channel_name}` : ""}.
+              </p>
+              <Link
+                to="/integrations/slack"
+                className="mt-sm inline-flex items-center rounded-md bg-primary px-sm py-2 text-small font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Manage alerts
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="mt-xs text-small text-text-secondary">
+                Connect Slack to send daily digest and instant risk alerts to your renewal team.
+              </p>
+              <Link
+                to="/integrations/slack"
+                className="mt-sm inline-flex items-center rounded-md bg-primary px-sm py-2 text-small font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Connect Slack alerts
+              </Link>
+            </>
+          )}
+        </Card>
+      ) : null}
+
       <Table
         items={data.items}
         rowKey={(item) => item.id}

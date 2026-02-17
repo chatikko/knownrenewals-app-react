@@ -19,6 +19,21 @@ export function SaasRenewalPage() {
         <li>Use automated renewal reminders for business stakeholders</li>
         <li>Review utilization and contract terms before each deadline</li>
       </ul>
+      <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Add Slack for faster team coordination</h2>
+      <p className="text-sm leading-relaxed text-slate-600">
+        Channel-based alerts help finance, IT, and operations teams align before renewal windows close.
+      </p>
+      <div className="flex flex-wrap gap-3 text-sm">
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-renewal-alerts">
+          Slack renewal alerts overview
+        </Link>
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-alerts-vs-email-reminders">
+          Slack vs email reminders
+        </Link>
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/blog/daily-slack-digest-for-renewal-teams">
+          Daily Slack digest setup guide
+        </Link>
+      </div>
       <p className="text-sm text-slate-600">
         Compare manual and automated options in{" "}
         <Link className="text-emerald-700 hover:text-emerald-800" to="/excel-vs-renewal-tracking-software">
@@ -31,4 +46,3 @@ export function SaasRenewalPage() {
 }
 
 export default SaasRenewalPage;
-

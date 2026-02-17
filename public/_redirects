@@ -7,6 +7,8 @@
 /saas-renewal-management /saas-renewal-management.html 200
 /renewal-tracking-software-pricing /renewal-tracking-software-pricing.html 200
 /excel-vs-renewal-tracking-software /excel-vs-renewal-tracking-software.html 200
+/slack-renewal-alerts /slack-renewal-alerts.html 200
+/slack-alerts-vs-email-reminders /slack-alerts-vs-email-reminders.html 200
 /blog /blog.html 200
 /privacy-policy /privacy-policy.html 200
 /terms-of-service /terms-of-service.html 200
@@ -19,4 +21,9 @@
 /blog/domain-renewal-reminder-tool /blog-domain-renewal-reminder-tool.html 200
 /blog/best-renewal-tracking-software-for-small-business /blog-best-renewal-tracking-software-for-small-business.html 200
 /blog/contract-expiration-tracking-system /blog-contract-expiration-tracking-system.html 200
+/blog/how-to-send-renewal-reminders-to-slack /blog-how-to-send-renewal-reminders-to-slack.html 200
+/blog/how-to-use-slack-for-contract-renewal-workflows /blog-how-to-use-slack-for-contract-renewal-workflows.html 200
+/blog/daily-slack-digest-for-renewal-teams /blog-daily-slack-digest-for-renewal-teams.html 200
+/blog/best-slack-channel-setup-for-renewal-alerts /blog-best-slack-channel-setup-for-renewal-alerts.html 200
+/blog/reduce-missed-renewals-with-slack-alerts /blog-reduce-missed-renewals-with-slack-alerts.html 200
 /* /spa.html 200

@@ -12,6 +12,8 @@ import { ContractManagementPage } from "@/pages/marketing/ContractManagementPage
 import { SaasRenewalPage } from "@/pages/marketing/SaasRenewalPage";
 import { PricingPage } from "@/pages/marketing/PricingPage";
 import { ExcelVsSoftwarePage } from "@/pages/marketing/ExcelVsSoftwarePage";
+import { SlackRenewalAlertsPage } from "@/pages/marketing/SlackRenewalAlertsPage";
+import { SlackVsEmailRemindersPage } from "@/pages/marketing/SlackVsEmailRemindersPage";
 
 const baseMarketingRoutes: RouteObject[] = [
   { path: "/", element: <LandingPage /> },
@@ -21,6 +23,8 @@ const baseMarketingRoutes: RouteObject[] = [
   { path: "/saas-renewal-management", element: <SaasRenewalPage /> },
   { path: "/renewal-tracking-software-pricing", element: <PricingPage /> },
   { path: "/excel-vs-renewal-tracking-software", element: <ExcelVsSoftwarePage /> },
+  { path: "/slack-renewal-alerts", element: <SlackRenewalAlertsPage /> },
+  { path: "/slack-alerts-vs-email-reminders", element: <SlackVsEmailRemindersPage /> },
   { path: "/blog", element: <BlogPage /> },
   ...articles.map((article) => ({
     path: `/blog/${article.slug}`,

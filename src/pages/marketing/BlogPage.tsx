@@ -2,7 +2,17 @@ import { Link } from "react-router-dom";
 import { articles } from "@/content/articles";
 import { SeoPageLayout } from "@/pages/marketing/SeoPageLayout";
 
+const slackArticleSlugs = new Set([
+  "how-to-send-renewal-reminders-to-slack",
+  "how-to-use-slack-for-contract-renewal-workflows",
+  "daily-slack-digest-for-renewal-teams",
+  "best-slack-channel-setup-for-renewal-alerts",
+  "reduce-missed-renewals-with-slack-alerts",
+]);
+
 export function BlogPage() {
+  const slackArticles = articles.filter((article) => slackArticleSlugs.has(article.slug));
+
   return (
     <SeoPageLayout
       title="Renewal Management Blog for Startups and SMB Teams"
@@ -13,6 +23,30 @@ export function BlogPage() {
         <p className="text-sm text-slate-600">
           These topics help teams move from manual tracking to an automated renewal management platform.
         </p>
+      </section>
+
+      <section className="rounded-lg border border-slate-200 bg-white p-5">
+        <h2 className="text-xl font-semibold tracking-tight text-slate-900">Slack renewal alerts guides</h2>
+        <p className="mt-2 text-sm text-slate-600">
+          Use this series to launch channel-based renewal workflows for finance, operations, and procurement teams.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-3 text-sm">
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-renewal-alerts">
+            Slack renewal alerts overview
+          </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-alerts-vs-email-reminders">
+            Slack vs email reminders
+          </Link>
+        </div>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-slate-700">
+          {slackArticles.map((article) => (
+            <li key={article.slug}>
+              <Link className="text-emerald-700 hover:text-emerald-800" to={`/blog/${article.slug}`}>
+                {article.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">

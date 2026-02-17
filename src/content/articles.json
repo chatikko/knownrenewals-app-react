@@ -513,5 +513,286 @@
       "label": "Explore contract renewal management",
       "to": "/contract-renewal-management-software"
     }
+  },
+  {
+    "slug": "how-to-send-renewal-reminders-to-slack",
+    "title": "How to Send Renewal Reminders to Slack in 30 Minutes",
+    "description": "Set up Slack renewal reminders with a daily digest and risk alerts so teams act before subscription and contract deadlines.",
+    "summary": "Connect Slack, choose a default channel, and launch renewal reminders in one setup session.",
+    "publishedAt": "2026-02-17",
+    "updatedAt": "2026-02-17",
+    "sections": [
+      {
+        "id": "why-slack-reminders",
+        "heading": "Why send renewal reminders to Slack",
+        "content": "Slack gives teams shared visibility and faster response loops compared with isolated reminder emails."
+      },
+      {
+        "id": "setup-steps",
+        "heading": "30-minute setup path",
+        "content": "Most teams can complete setup quickly with a simple sequence.",
+        "bullets": [
+          "Connect Slack workspace from Integrations",
+          "Select a default channel for renewal operations",
+          "Enable daily digest and instant risk alerts",
+          "Send a test message and confirm delivery"
+        ]
+      },
+      {
+        "id": "message-structure",
+        "heading": "Structure reminders for action",
+        "content": "Include owner, due date, vendor, and the expected next action in every reminder so teams know who moves next."
+      },
+      {
+        "id": "weekly-routine",
+        "heading": "Run a weekly follow-up routine",
+        "content": "Review unresolved alerts every week and escalate contracts with no owner updates before notice deadlines."
+      }
+    ],
+    "faq": [
+      {
+        "question": "How many channels should we use for renewal alerts?",
+        "answer": "Start with one default channel to build consistency, then split by team only if alert volume requires it."
+      },
+      {
+        "question": "What reminders should go to Slack first?",
+        "answer": "Daily digest and high-risk renewals are the best starting point because they combine visibility with urgency."
+      },
+      {
+        "question": "Can small teams use Slack reminders effectively?",
+        "answer": "Yes. Smaller teams often benefit quickly because channel visibility removes manual follow-up overhead."
+      }
+    ],
+    "primaryCta": {
+      "label": "Start Free Trial",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "Explore Slack renewal alerts",
+      "to": "/slack-renewal-alerts"
+    }
+  },
+  {
+    "slug": "how-to-use-slack-for-contract-renewal-workflows",
+    "title": "How Finance Teams Use Slack for Contract Renewal Workflows",
+    "description": "Build a finance-friendly Slack workflow for contract renewals with clear owners, escalation, and approval checkpoints.",
+    "summary": "Use Slack to coordinate finance, legal, and operations decisions before contract notice periods close.",
+    "publishedAt": "2026-02-17",
+    "updatedAt": "2026-02-17",
+    "sections": [
+      {
+        "id": "workflow-problem",
+        "heading": "Contract workflows fail when ownership is unclear",
+        "content": "Without shared channel visibility, contract decisions stall and finance approvals arrive too late."
+      },
+      {
+        "id": "owner-model",
+        "heading": "Define a simple owner model",
+        "content": "Assign one business owner and one finance approver to every contract before reminders begin."
+      },
+      {
+        "id": "escalation-rules",
+        "heading": "Add escalation rules in Slack",
+        "content": "Escalate unresolved contracts on a fixed schedule so risk renewals stay visible to decision-makers.",
+        "bullets": [
+          "Escalate at 14 days when no owner update is logged",
+          "Escalate again at 7 days for final decision",
+          "Route high-value contracts to finance leadership"
+        ]
+      },
+      {
+        "id": "decision-closeout",
+        "heading": "Close decisions with audit-ready notes",
+        "content": "Record renew, cancel, or renegotiate outcomes so teams can improve future contract cycles."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Should finance own every renewal alert?",
+        "answer": "Finance should own approvals, but business owners should handle first-response and usage context."
+      },
+      {
+        "question": "How do we avoid alert fatigue in Slack?",
+        "answer": "Use one renewal channel, clear escalation triggers, and short message templates focused on action."
+      },
+      {
+        "question": "Can this workflow support legal review?",
+        "answer": "Yes. Add legal stakeholders for contracts that need terms review before approval."
+      }
+    ],
+    "primaryCta": {
+      "label": "Start Free Trial",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "Compare Slack vs email reminders",
+      "to": "/slack-alerts-vs-email-reminders"
+    }
+  },
+  {
+    "slug": "daily-slack-digest-for-renewal-teams",
+    "title": "Daily Slack Digest for Renewal Teams: Setup and Best Practices",
+    "description": "Run a daily Slack digest for renewal teams with practical setup steps, channel structure, and review habits.",
+    "summary": "A daily digest keeps upcoming renewals visible without overwhelming teams with constant notifications.",
+    "publishedAt": "2026-02-17",
+    "updatedAt": "2026-02-17",
+    "sections": [
+      {
+        "id": "digest-value",
+        "heading": "Why daily digest is a strong default",
+        "content": "Daily summaries create a reliable operating rhythm while reducing notification noise from one-off reminders."
+      },
+      {
+        "id": "digest-content",
+        "heading": "What your digest should include",
+        "content": "Keep digest sections consistent so teams can scan priority items quickly.",
+        "bullets": [
+          "Due in 30 days",
+          "Due in 7 days",
+          "Risk renewals requiring immediate action"
+        ]
+      },
+      {
+        "id": "team-routine",
+        "heading": "Create a repeatable team routine",
+        "content": "Assign one person to review digest items daily and trigger owner follow-ups for unresolved contracts."
+      },
+      {
+        "id": "balance-notifications",
+        "heading": "Balance digest and instant alerts",
+        "content": "Use digest for broad visibility and instant alerts only for risk and near-deadline conditions."
+      }
+    ],
+    "faq": [
+      {
+        "question": "How often should a renewal digest run?",
+        "answer": "Daily is a practical default for most teams because it keeps visibility high without excessive interruptions."
+      },
+      {
+        "question": "Can digest replace instant alerts?",
+        "answer": "Digest covers planning, but instant alerts are useful for high-risk renewals that need rapid escalation."
+      },
+      {
+        "question": "Who should be in the digest channel?",
+        "answer": "Include finance, operations, and core owners responsible for renewal decisions."
+      }
+    ],
+    "primaryCta": {
+      "label": "Start Free Trial",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "Explore Slack renewal alerts",
+      "to": "/slack-renewal-alerts"
+    }
+  },
+  {
+    "slug": "best-slack-channel-setup-for-renewal-alerts",
+    "title": "Best Slack Channel Setup for Renewal Alerts",
+    "description": "Choose the right Slack channel structure for renewal alerts so teams respond quickly without creating noise.",
+    "summary": "Use channel design rules that improve accountability and keep renewal conversations actionable.",
+    "publishedAt": "2026-02-17",
+    "updatedAt": "2026-02-17",
+    "sections": [
+      {
+        "id": "single-channel-start",
+        "heading": "Start with one channel first",
+        "content": "A single channel makes ownership and escalation easy to manage while your process stabilizes."
+      },
+      {
+        "id": "naming-and-members",
+        "heading": "Use clear channel naming and membership",
+        "content": "Choose a clear channel name and include all stakeholders who can move renewal decisions forward."
+      },
+      {
+        "id": "message-rules",
+        "heading": "Set message and response rules",
+        "content": "Define who responds, response time targets, and when to escalate open items.",
+        "bullets": [
+          "Tag owner and backup owner in critical alerts",
+          "Require a decision update within one business day for risk alerts",
+          "Escalate unresolved approvals before final notice windows"
+        ]
+      },
+      {
+        "id": "scale-pattern",
+        "heading": "Scale to multiple channels only when needed",
+        "content": "Split channels by region or business unit only after volume justifies separate workflows."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Should renewal alerts go to a public or private channel?",
+        "answer": "Most teams start with a public operations channel for visibility, then use private channels for sensitive vendor discussions."
+      },
+      {
+        "question": "How many people should be in the default channel?",
+        "answer": "Include only active decision-makers and owners to keep alerts actionable and reduce noise."
+      },
+      {
+        "question": "When should we split into multiple channels?",
+        "answer": "Split channels when alert volume or ownership complexity makes one channel hard to manage."
+      }
+    ],
+    "primaryCta": {
+      "label": "Start Free Trial",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "Compare Slack vs email reminders",
+      "to": "/slack-alerts-vs-email-reminders"
+    }
+  },
+  {
+    "slug": "reduce-missed-renewals-with-slack-alerts",
+    "title": "How Slack Alerts Reduce Missed Renewal Deadlines",
+    "description": "Use Slack alerts to reduce missed renewal deadlines with owner accountability and faster escalation.",
+    "summary": "Slack alerts help teams surface deadline risk early and convert reminders into completed renewal decisions.",
+    "publishedAt": "2026-02-17",
+    "updatedAt": "2026-02-17",
+    "sections": [
+      {
+        "id": "deadline-failure-pattern",
+        "heading": "Why deadlines are missed",
+        "content": "Deadlines are often missed when reminders are not visible to all stakeholders who need to approve renewal actions."
+      },
+      {
+        "id": "alert-to-action",
+        "heading": "Turn alerts into decisions",
+        "content": "Each alert should include an owner, due date, and explicit next step so teams can resolve items quickly."
+      },
+      {
+        "id": "escalation-speed",
+        "heading": "Escalate faster on risk renewals",
+        "content": "Use instant Slack alerts for renewals that enter risk windows so delays are addressed before notice cutoffs."
+      },
+      {
+        "id": "measure-improvement",
+        "heading": "Measure operational improvement",
+        "content": "Track missed-deadline rate, owner response time, and completed decisions before and after Slack rollout."
+      }
+    ],
+    "faq": [
+      {
+        "question": "What metric should we track first?",
+        "answer": "Start with missed renewal deadlines and owner response time to alerts."
+      },
+      {
+        "question": "Do Slack alerts improve negotiation timing?",
+        "answer": "Yes. Earlier visibility usually gives teams more time to review usage and negotiate before renewals lock in."
+      },
+      {
+        "question": "Can this work for startups with small teams?",
+        "answer": "Yes. Smaller teams often see faster gains because shared visibility removes manual coordination delays."
+      }
+    ],
+    "primaryCta": {
+      "label": "Start Free Trial",
+      "to": "/signup"
+    },
+    "secondaryCta": {
+      "label": "Explore Slack renewal alerts",
+      "to": "/slack-renewal-alerts"
+    }
   }
 ]

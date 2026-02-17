@@ -17,6 +17,8 @@ import { ContractManagementPage } from "@/pages/marketing/ContractManagementPage
 import { SaasRenewalPage } from "@/pages/marketing/SaasRenewalPage";
 import { PricingPage } from "@/pages/marketing/PricingPage";
 import { ExcelVsSoftwarePage } from "@/pages/marketing/ExcelVsSoftwarePage";
+import { SlackRenewalAlertsPage } from "@/pages/marketing/SlackRenewalAlertsPage";
+import { SlackVsEmailRemindersPage } from "@/pages/marketing/SlackVsEmailRemindersPage";
 import { ErrorPage } from "@/pages/ErrorPage";
 import { DashboardPage } from "@/pages/app/DashboardPage";
 import { ContractsPage } from "@/pages/app/ContractsPage";
@@ -47,6 +49,8 @@ export const router = createBrowserRouter([
     element: <ExcelVsSoftwarePage />,
     errorElement: <ErrorPage />,
   },
+  { path: "/slack-renewal-alerts", element: <SlackRenewalAlertsPage />, errorElement: <ErrorPage /> },
+  { path: "/slack-alerts-vs-email-reminders", element: <SlackVsEmailRemindersPage />, errorElement: <ErrorPage /> },
   { path: "/blog", element: <BlogPage />, errorElement: <ErrorPage /> },
   ...articles.map((article) => ({
     path: `/blog/${article.slug}`,
