@@ -24,6 +24,7 @@ import { AddContractPage } from "@/pages/app/AddContractPage";
 import { ContractDetailPage } from "@/pages/app/ContractDetailPage";
 import { BillingPage } from "@/pages/app/BillingPage";
 import { TeamPage } from "@/pages/app/TeamPage";
+import { SlackIntegrationPage } from "@/pages/app/SlackIntegrationPage";
 import { AdminUsersPage } from "@/pages/admin/AdminUsersPage";
 import { AdminAccountsPage } from "@/pages/admin/AdminAccountsPage";
 import { AdminContractsPage } from "@/pages/admin/AdminContractsPage";
@@ -70,6 +71,7 @@ export const router = createBrowserRouter([
           { path: "contracts/new", element: <AddContractPage /> },
           { path: "contracts/:id", element: <ContractDetailPage /> },
           { path: "billing", element: <BillingPage /> },
+          { path: "integrations/slack", element: <SlackIntegrationPage /> },
           { path: "team", element: <TeamPage /> },
           { path: "teams", element: <Navigate to="/team" replace /> },
           {

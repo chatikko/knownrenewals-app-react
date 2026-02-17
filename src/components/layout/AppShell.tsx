@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/primitives/Button";
 import { adminApi } from "@/api/admin";
 import { billingApi } from "@/api/billing";
+import { integrationsApi } from "@/api/integrations";
 import { Badge } from "@/components/primitives/Badge";
 import { Icon, type IconName } from "@/components/primitives/Icon";
 import { ThemeToggle } from "@/components/primitives/ThemeToggle";
@@ -38,6 +39,13 @@ export function AppShell() {
   const billingStatus = useQuery({
     queryKey: ["billing", "status"],
     queryFn: billingApi.status,
+    enabled: isAuthenticated,
+    retry: false,
+    staleTime: 60_000,
+  });
+  const slackStatusProbe = useQuery({
+    queryKey: ["integrations", "slack", "status", "nav"],
+    queryFn: integrationsApi.getSlackStatus,
     enabled: isAuthenticated,
     retry: false,
     staleTime: 60_000,
@@ -79,11 +87,18 @@ export function AppShell() {
   })();
 
   const isAdmin = adminProbe.isSuccess;
+  const canManageSlack = slackStatusProbe.isSuccess;
   const planTier = (billingStatus.data?.plan_tier ?? "").toLowerCase();
   const canAccessTeam = planTier === "pro" || planTier === "team";
-  const visibleAppLinks: Array<[string, string, IconName]> = canAccessTeam
-    ? [...appLinks.slice(0, 2), ["/team", "Team", "users"], appLinks[2]]
-    : appLinks;
+  const visibleAppLinks: Array<[string, string, IconName]> = (() => {
+    const links: Array<[string, string, IconName]> = canAccessTeam
+      ? [...appLinks.slice(0, 2), ["/team", "Team", "users"] as [string, string, IconName], appLinks[2]]
+      : [...appLinks];
+    if (canManageSlack) {
+      links.splice(2, 0, ["/integrations/slack", "Slack Alerts", "slack"] as [string, string, IconName]);
+    }
+    return links;
+  })();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">

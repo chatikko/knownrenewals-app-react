@@ -103,7 +103,7 @@ export default defineConfig({
   base: "/",
   plugins: [react(), devRedirectsPlugin()],
   server: {
-    allowedHosts: ["*"],
+    allowedHosts: true,
   },
   resolve: {
     alias: {

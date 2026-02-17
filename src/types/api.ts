@@ -113,3 +113,45 @@ export type AdminBillingEvent = {
   status: string;
   created_at: string;
 };
+
+export type SlackIntegrationStatus = {
+  slack_integration_enabled: boolean;
+  connected: boolean;
+  plan_tier: string;
+  instant_alerts_available: boolean;
+  founders_digest_only: boolean;
+  workspace_id: string | null;
+  workspace_name: string | null;
+  default_channel_id: string | null;
+  default_channel_name: string | null;
+  digest_enabled: boolean;
+  instant_risk_enabled: boolean;
+  instant_due_7d_enabled: boolean;
+  digest_hour_local: number;
+  timezone: string;
+  is_degraded: boolean;
+  last_error_code: string | null;
+  last_error_message: string | null;
+  last_error_at: string | null;
+  last_test_success: boolean | null;
+  last_test_sent_at: string | null;
+};
+
+export type SlackChannel = {
+  id: string;
+  name: string;
+};
+
+export type SlackConfigPayload = {
+  default_channel_id: string | null;
+  default_channel_name: string | null;
+  digest_enabled: boolean;
+  instant_risk_enabled: boolean;
+  instant_due_7d_enabled: boolean;
+  digest_hour_local: number;
+};
+
+export type SlackTestResponse = {
+  message: string;
+  sent_at: string;
+};
