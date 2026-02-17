@@ -152,6 +152,10 @@ export function SlackIntegrationPage() {
 
   const selectedChannelName =
     options.find((item) => item.value === (config.default_channel_id ?? ""))?.label.replace(/^#/, "") ?? null;
+  const showChannelReconfigurationWarning = !status.default_channel_id || Boolean(status.last_error_message);
+  const channelReconfigurationMessage = status.last_error_message
+    ? `Slack is connected, but default channel must be reselected. Token is still connected; choose a channel and save. Last Slack error: ${status.last_error_message}`
+    : "Slack is connected, but default channel must be reselected. Token is still connected; choose a channel and save.";
 
   return (
     <div className="max-w-4xl space-y-lg">
@@ -216,7 +220,9 @@ export function SlackIntegrationPage() {
               <p className="text-small text-text-secondary">
                 Digest time: 09:00 ({status.timezone})
               </p>
-              {status.is_degraded ? (
+              {showChannelReconfigurationWarning ? (
+                <Alert tone="warning" message={channelReconfigurationMessage} />
+              ) : status.is_degraded ? (
                 <Alert
                   tone="warning"
                   message={
