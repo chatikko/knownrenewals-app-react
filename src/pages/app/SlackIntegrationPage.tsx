@@ -187,6 +187,7 @@ export function SlackIntegrationPage() {
             Connect one workspace and choose a default channel. KnowRenewals will post:
           </p>
           <ul className="list-disc space-y-xs pl-lg text-small text-text-secondary">
+            <li>Auto-creates a dedicated <span className="font-medium">#knowrenewal</span> channel when workspace permissions allow it</li>
             <li>Daily digest at 09:00 account timezone</li>
             {instantAlertsLocked ? (
               <li>Instant alerts are unlocked on Pro and Team plans.</li>
