@@ -4,6 +4,8 @@ import type {
   AdminAuthEvent,
   AdminBillingEvent,
   AdminContract,
+  LeadMagnetDownload,
+  LeadMagnetStats,
   AdminUser,
   CommonResponse,
   ListResponse,
@@ -51,6 +53,25 @@ export const adminApi = {
   billingEvents: {
     list: async (skip: number, limit: number) => {
       const res = await http.get<ListResponse<AdminBillingEvent>>("/admin/billing-events", withPage(skip, limit));
+      return res.data;
+    },
+  },
+  leadMagnets: {
+    stats: async () => {
+      const res = await http.get<CommonResponse<LeadMagnetStats>>("/admin/lead-magnets/renewal-template/stats");
+      return res.data.data;
+    },
+    list: async (skip: number, limit: number) => {
+      const res = await http.get<ListResponse<LeadMagnetDownload>>(
+        "/admin/lead-magnets/renewal-template/downloads",
+        withPage(skip, limit),
+      );
+      return res.data;
+    },
+    downloadCsv: async () => {
+      const res = await http.get<Blob>("/admin/lead-magnets/renewal-template/downloads.csv", {
+        responseType: "blob",
+      });
       return res.data;
     },
   },

@@ -26,6 +26,13 @@ export function ExcelVsSoftwarePage() {
         software is usually lower risk and lower total cost than manual tracking.
       </p>
       <p className="text-sm text-slate-600">
+        Need a fast manual starting point while you evaluate tools? Use the{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/free-renewal-tracking-spreadsheet-template">
+          free renewal tracking spreadsheet template
+        </Link>
+        .
+      </p>
+      <p className="text-sm text-slate-600">
         For collaboration-heavy teams, compare{" "}
         <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-alerts-vs-email-reminders">
           Slack vs email reminders

@@ -28,6 +28,13 @@ export function PricingPage() {
         <li>Team: Full Slack alerting workflow with shared team operations</li>
       </ul>
       <p className="text-sm text-slate-600">
+        If your team still uses spreadsheets, start with the{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/free-renewal-tracking-spreadsheet-template">
+          free renewal tracking spreadsheet template
+        </Link>
+        .
+      </p>
+      <p className="text-sm text-slate-600">
         Review{" "}
         <Link className="text-emerald-700 hover:text-emerald-800" to="/slack-renewal-alerts">
           Slack renewal alerts

@@ -14,6 +14,7 @@ import { PricingPage } from "@/pages/marketing/PricingPage";
 import { ExcelVsSoftwarePage } from "@/pages/marketing/ExcelVsSoftwarePage";
 import { SlackRenewalAlertsPage } from "@/pages/marketing/SlackRenewalAlertsPage";
 import { SlackVsEmailRemindersPage } from "@/pages/marketing/SlackVsEmailRemindersPage";
+import { FreeTemplatePage } from "@/pages/marketing/FreeTemplatePage";
 
 const baseMarketingRoutes: RouteObject[] = [
   { path: "/", element: <LandingPage /> },
@@ -25,6 +26,7 @@ const baseMarketingRoutes: RouteObject[] = [
   { path: "/excel-vs-renewal-tracking-software", element: <ExcelVsSoftwarePage /> },
   { path: "/slack-renewal-alerts", element: <SlackRenewalAlertsPage /> },
   { path: "/slack-alerts-vs-email-reminders", element: <SlackVsEmailRemindersPage /> },
+  { path: "/free-renewal-tracking-spreadsheet-template", element: <FreeTemplatePage /> },
   { path: "/blog", element: <BlogPage /> },
   ...articles.map((article) => ({
     path: `/blog/${article.slug}`,

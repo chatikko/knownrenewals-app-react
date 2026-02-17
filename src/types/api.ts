@@ -114,6 +114,49 @@ export type AdminBillingEvent = {
   created_at: string;
 };
 
+export type LeadMagnetStatus = "pending" | "sent" | "failed" | "skipped";
+
+export type LeadMagnetSubmitPayload = {
+  email: string;
+  source_path?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+  referrer?: string;
+};
+
+export type LeadMagnetSubmitResponse = {
+  message: string;
+  status: LeadMagnetStatus;
+};
+
+export type LeadMagnetStats = {
+  total_submissions: number;
+  successful_sends: number;
+  unique_emails: number;
+  failed_deliveries: number;
+  skipped_submissions: number;
+};
+
+export type LeadMagnetDownload = {
+  id: string;
+  magnet_key: string;
+  email: string;
+  status: LeadMagnetStatus;
+  sent_at: string | null;
+  failure_reason: string | null;
+  source_path: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_term: string | null;
+  utm_content: string | null;
+  referrer: string | null;
+  created_at: string;
+};
+
 export type SlackIntegrationStatus = {
   slack_integration_enabled: boolean;
   connected: boolean;

@@ -22,6 +22,7 @@ const adminLinks: Array<[string, string, IconName]> = [
   ["/admin/contracts", "Admin Contracts", "adminContracts"],
   ["/admin/auth-events", "Auth Events", "authEvents"],
   ["/admin/billing-events", "Billing Events", "billingEvents"],
+  ["/admin/lead-magnets", "Lead Magnets", "accounts"],
 ];
 
 export function AppShell() {

@@ -55,6 +55,11 @@
     "type": "rewrite"
   },
   {
+    "source": "/free-renewal-tracking-spreadsheet-template",
+    "destination": "/free-renewal-tracking-spreadsheet-template.html",
+    "type": "rewrite"
+  },
+  {
     "source": "/blog",
     "destination": "/blog.html",
     "type": "rewrite"

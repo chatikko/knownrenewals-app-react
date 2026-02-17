@@ -76,6 +76,9 @@ export function BlogPage() {
           <Link className="text-emerald-700 hover:text-emerald-800" to="/excel-vs-renewal-tracking-software">
             Excel vs renewal tracking software
           </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/free-renewal-tracking-spreadsheet-template">
+            Free renewal tracking spreadsheet template
+          </Link>
           <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software-pricing">
             Renewal tracking software pricing
           </Link>

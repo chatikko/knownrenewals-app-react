@@ -108,6 +108,18 @@
     "breadcrumbName": "Slack vs Email Reminders"
   },
   {
+    "path": "/free-renewal-tracking-spreadsheet-template",
+    "title": "Free Renewal Tracking Spreadsheet Template | KnowRenewals",
+    "description": "Download a free spreadsheet template with formulas to track subscription, contract, SaaS, domain, and license renewals.",
+    "canonical": "https://knowrenewals.com/free-renewal-tracking-spreadsheet-template",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.7,
+    "changefreq": "weekly",
+    "breadcrumbName": "Free Spreadsheet Template"
+  },
+  {
     "path": "/blog",
     "title": "Renewal Management Blog | KnowRenewals",
     "description": "Read long-tail guides on subscription renewal tracking, SaaS renewals, contract reminders, and renewal operations.",

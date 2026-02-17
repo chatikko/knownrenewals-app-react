@@ -19,6 +19,7 @@ import { PricingPage } from "@/pages/marketing/PricingPage";
 import { ExcelVsSoftwarePage } from "@/pages/marketing/ExcelVsSoftwarePage";
 import { SlackRenewalAlertsPage } from "@/pages/marketing/SlackRenewalAlertsPage";
 import { SlackVsEmailRemindersPage } from "@/pages/marketing/SlackVsEmailRemindersPage";
+import { FreeTemplatePage } from "@/pages/marketing/FreeTemplatePage";
 import { ErrorPage } from "@/pages/ErrorPage";
 import { DashboardPage } from "@/pages/app/DashboardPage";
 import { ContractsPage } from "@/pages/app/ContractsPage";
@@ -32,6 +33,7 @@ import { AdminAccountsPage } from "@/pages/admin/AdminAccountsPage";
 import { AdminContractsPage } from "@/pages/admin/AdminContractsPage";
 import { AdminAuthEventsPage } from "@/pages/admin/AdminAuthEventsPage";
 import { AdminBillingEventsPage } from "@/pages/admin/AdminBillingEventsPage";
+import { AdminLeadMagnetPage } from "@/pages/admin/AdminLeadMagnetPage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LandingPage />, errorElement: <ErrorPage /> },
@@ -51,6 +53,7 @@ export const router = createBrowserRouter([
   },
   { path: "/slack-renewal-alerts", element: <SlackRenewalAlertsPage />, errorElement: <ErrorPage /> },
   { path: "/slack-alerts-vs-email-reminders", element: <SlackVsEmailRemindersPage />, errorElement: <ErrorPage /> },
+  { path: "/free-renewal-tracking-spreadsheet-template", element: <FreeTemplatePage />, errorElement: <ErrorPage /> },
   { path: "/blog", element: <BlogPage />, errorElement: <ErrorPage /> },
   ...articles.map((article) => ({
     path: `/blog/${article.slug}`,
@@ -86,6 +89,7 @@ export const router = createBrowserRouter([
               { path: "admin/contracts", element: <AdminContractsPage /> },
               { path: "admin/auth-events", element: <AdminAuthEventsPage /> },
               { path: "admin/billing-events", element: <AdminBillingEventsPage /> },
+              { path: "admin/lead-magnets", element: <AdminLeadMagnetPage /> },
             ],
           },
         ],

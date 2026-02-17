@@ -274,6 +274,12 @@ export function LandingPage() {
               <Link className="block text-emerald-700 hover:text-emerald-800" to="/blog/how-to-send-renewal-reminders-to-slack">
                 How to send renewal reminders to Slack
               </Link>
+              <Link
+                className="block text-emerald-700 hover:text-emerald-800"
+                to="/free-renewal-tracking-spreadsheet-template"
+              >
+                Free renewal tracking spreadsheet template
+              </Link>
               <Link className="block text-emerald-700 hover:text-emerald-800" to="/blog">
                 Blog: long-tail renewal management guides
               </Link>
@@ -289,6 +295,13 @@ export function LandingPage() {
             </p>
             <p className="text-sm text-slate-600">
               Slack alerts are included across plans: Founders includes daily digest, and Pro/Team include instant risk alerts.
+            </p>
+            <p className="text-sm text-slate-600">
+              Need a spreadsheet first? Get the{" "}
+              <Link className="text-emerald-700 hover:text-emerald-800" to="/free-renewal-tracking-spreadsheet-template">
+                free renewal tracking template
+              </Link>
+              .
             </p>
           </div>
 
