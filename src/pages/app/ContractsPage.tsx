@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useRef, useState, type ChangeEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import * as XLSX from "xlsx";
 import { contractsApi } from "@/api/contracts";
 import { billingApi } from "@/api/billing";
 import { Button } from "@/components/primitives/Button";
@@ -43,6 +44,81 @@ function parseCsv(content: string): string[][] {
   return rows;
 }
 
+function parseSpreadsheetRows(content: ArrayBuffer): string[][] {
+  const workbook = XLSX.read(content, { type: "array", cellDates: true });
+  const firstSheetName = workbook.SheetNames[0];
+  if (!firstSheetName) return [];
+  const worksheet = workbook.Sheets[firstSheetName];
+  const rows = XLSX.utils.sheet_to_json<Array<string | number | boolean | Date | null>>(worksheet, {
+    header: 1,
+    raw: true,
+    defval: "",
+  });
+  return rows.map((row) =>
+    row.map((cell) => {
+      if (cell === null || cell === undefined) return "";
+      if (cell instanceof Date) return cell.toISOString().slice(0, 10);
+      return String(cell).trim();
+    }),
+  );
+}
+
+async function parseImportRows(file: File): Promise<string[][]> {
+  const name = file.name.toLowerCase();
+  if (name.endsWith(".csv")) {
+    const text = await file.text();
+    return parseCsv(text);
+  }
+  if (name.endsWith(".xlsx") || name.endsWith(".xls")) {
+    const content = await file.arrayBuffer();
+    return parseSpreadsheetRows(content);
+  }
+  throw new Error("Unsupported file type. Use CSV, XLSX, or XLS.");
+}
+
+function normalizeHeader(value: string): string {
+  return value.trim().toLowerCase().replace(/_/g, " ").replace(/\s+/g, " ");
+}
+
+function indexByAliases(headers: string[], aliases: string[]): number {
+  const normalizedAliases = aliases.map((alias) => normalizeHeader(alias));
+  return headers.findIndex((header) => normalizedAliases.includes(header));
+}
+
+function parseOptionalNumber(value: string): number | undefined {
+  const text = value.trim().replace(/,/g, "").replace(/[^0-9.-]/g, "");
+  if (!text) return undefined;
+  const parsed = Number(text);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
+function parseOptionalBoolean(value: string): boolean | undefined {
+  const text = value.trim().toLowerCase();
+  if (!text) return undefined;
+  if (["yes", "true", "1", "y"].includes(text)) return true;
+  if (["no", "false", "0", "n"].includes(text)) return false;
+  return undefined;
+}
+
+function normalizeDateInput(value: string): string {
+  const text = value.trim();
+  if (!text) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+
+  const maybeSerial = Number(text);
+  if (!Number.isNaN(maybeSerial) && Number.isFinite(maybeSerial)) {
+    const parsed = XLSX.SSF.parse_date_code(maybeSerial);
+    if (parsed && parsed.y && parsed.m && parsed.d) {
+      const date = new Date(Date.UTC(parsed.y, parsed.m - 1, parsed.d));
+      return date.toISOString().slice(0, 10);
+    }
+  }
+
+  const date = new Date(text);
+  if (!Number.isNaN(date.getTime())) return date.toISOString().slice(0, 10);
+  return text;
+}
+
 function escapeCsv(value: string): string {
   if (value.includes(",") || value.includes("\"") || value.includes("\n")) {
     return `"${value.replace(/"/g, "\"\"")}"`;
@@ -62,6 +138,23 @@ function normalizeType(type: string): RenewalType {
   return lookup[type.trim().toLowerCase()] ?? "Contract";
 }
 
+function inferTypeFromCategory(category: string): RenewalType {
+  const normalized = category.trim().toLowerCase();
+  if (!normalized) return "Contract";
+  const byCategory: Record<string, RenewalType> = {
+    saas: "Subscription",
+    software: "Subscription",
+    subscription: "Subscription",
+    domain: "Domain",
+    certificate: "Certificate",
+    license: "License",
+    insurance: "Other",
+    vendor: "Contract",
+    contract: "Contract",
+  };
+  return byCategory[normalized] ?? "Contract";
+}
+
 export function ContractsPage() {
   const qc = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -76,16 +169,40 @@ export function ContractsPage() {
   const data = query.data;
 
   const downloadCsv = () => {
-    const header = ["vendor_name", "renewal_type", "renewal_name", "renewal_date", "notice_period_days", "owner_email", "status"];
+    const header = [
+      "external_contract_id",
+      "vendor_name",
+      "category",
+      "renewal_type",
+      "renewal_name",
+      "start_date",
+      "renewal_date",
+      "billing_frequency",
+      "contract_value",
+      "annualized_value",
+      "auto_renew",
+      "notice_period_days",
+      "owner_email",
+      "notes",
+      "status",
+    ];
     const rows = data.items.map((item) => {
       const parsed = extractRenewal(item);
       return [
+        item.external_contract_id ?? "",
         item.vendor_name,
+        item.category ?? "",
         parsed.renewalType,
         parsed.renewalName || item.vendor_name,
+        item.start_date ? item.start_date.slice(0, 10) : "",
         item.renewal_date.slice(0, 10),
+        item.billing_frequency ?? "",
+        item.contract_value?.toString() ?? "",
+        item.annualized_value?.toString() ?? "",
+        item.auto_renew === null || item.auto_renew === undefined ? "" : (item.auto_renew ? "Yes" : "No"),
         String(item.notice_period_days),
         item.owner_email,
+        item.notes ?? "",
         item.status,
       ].map(escapeCsv).join(",");
     });
@@ -100,8 +217,42 @@ export function ContractsPage() {
   };
 
   const downloadTemplate = () => {
-    const header = ["vendor_name", "renewal_type", "renewal_name", "renewal_date", "notice_period_days", "owner_email"];
-    const sample = ["Acme Inc", "Subscription", "CRM Platform", "2026-06-30", "30", "ops@acme.com"];
+    const header = [
+      "Contract ID",
+      "Contract Name",
+      "Vendor",
+      "Category",
+      "Start Date",
+      "Renewal Date",
+      "Billing Frequency",
+      "Contract Value",
+      "Auto Renew",
+      "Notice Period (Days)",
+      "Renewal Notice Date",
+      "Days Until Renewal",
+      "Renewal Status",
+      "Owner",
+      "Notes",
+      "Annualized Value",
+    ];
+    const sample = [
+      "KR-001",
+      "CRM Platform",
+      "Acme CRM",
+      "SaaS",
+      "2025-03-01",
+      "2026-03-01",
+      "Annual",
+      "12000",
+      "Yes",
+      "30",
+      "",
+      "",
+      "",
+      "ops@acme.com",
+      "Primary CRM used by sales and customer success.",
+      "12000",
+    ];
     const csv = [header.join(","), sample.join(",")].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -123,30 +274,55 @@ export function ContractsPage() {
     setImporting(true);
 
     try {
-      const text = await file.text();
-      const rows = parseCsv(text);
-      if (rows.length < 2) throw new Error("CSV must include header and at least one row.");
+      const rows = await parseImportRows(file);
+      if (rows.length < 2) throw new Error("File must include header and at least one row.");
 
-      const headers = rows[0].map((h) => h.trim().toLowerCase());
-      const indexOf = (name: string) => headers.indexOf(name);
-      const required = ["vendor_name", "renewal_date", "notice_period_days", "owner_email"];
-      for (const key of required) {
-        if (indexOf(key) === -1) throw new Error(`Missing required column: ${key}`);
+      const headers = rows[0].map((h) => normalizeHeader(h));
+      const col = {
+        vendor: indexByAliases(headers, ["vendor_name", "vendor"]),
+        renewalDate: indexByAliases(headers, ["renewal_date", "renewal date"]),
+        noticeDays: indexByAliases(headers, ["notice_period_days", "notice period (days)", "notice period days"]),
+        owner: indexByAliases(headers, ["owner_email", "owner"]),
+        renewalType: indexByAliases(headers, ["renewal_type", "renewal type"]),
+        renewalName: indexByAliases(headers, ["renewal_name", "renewal name", "contract_name", "contract name"]),
+        externalContractId: indexByAliases(headers, ["external_contract_id", "external contract id", "contract_id", "contract id"]),
+        category: indexByAliases(headers, ["category"]),
+        startDate: indexByAliases(headers, ["start_date", "start date"]),
+        billingFrequency: indexByAliases(headers, ["billing_frequency", "billing frequency"]),
+        contractValue: indexByAliases(headers, ["contract_value", "contract value"]),
+        annualizedValue: indexByAliases(headers, ["annualized_value", "annualized value"]),
+        autoRenew: indexByAliases(headers, ["auto_renew", "auto renew"]),
+        notes: indexByAliases(headers, ["notes"]),
+      };
+
+      if (col.renewalDate === -1) {
+        throw new Error("Missing required column: renewal date.");
       }
 
       let created = 0;
       let failed = 0;
       for (const row of rows.slice(1)) {
         if (!row.length || row.every((cell) => cell.trim() === "")) continue;
-        const vendor = row[indexOf("vendor_name")]?.trim();
-        const renewalDate = row[indexOf("renewal_date")]?.trim();
-        const noticeDaysRaw = row[indexOf("notice_period_days")]?.trim();
-        const ownerEmail = row[indexOf("owner_email")]?.trim();
-        const typeRaw = indexOf("renewal_type") >= 0 ? row[indexOf("renewal_type")]?.trim() : "";
-        const nameRaw = indexOf("renewal_name") >= 0 ? row[indexOf("renewal_name")]?.trim() : "";
-        const noticeDays = Number(noticeDaysRaw);
+        const valueAt = (index: number) => (index >= 0 ? (row[index] ?? "").trim() : "");
+        const vendor = valueAt(col.vendor) || valueAt(col.renewalName) || "Unknown Vendor";
+        const renewalDate = normalizeDateInput(valueAt(col.renewalDate));
+        const noticeDaysRaw = valueAt(col.noticeDays);
+        const ownerEmail = valueAt(col.owner);
+        const category = valueAt(col.category);
+        const typeRaw = valueAt(col.renewalType);
+        const nameRaw = valueAt(col.renewalName);
+        const noticeDays = noticeDaysRaw ? Number(noticeDaysRaw) : 30;
+        const externalContractId = valueAt(col.externalContractId);
+        const startDate = normalizeDateInput(valueAt(col.startDate));
+        const billingFrequency = valueAt(col.billingFrequency);
+        const contractValue = parseOptionalNumber(valueAt(col.contractValue));
+        const annualizedValue = parseOptionalNumber(valueAt(col.annualizedValue));
+        const autoRenew = parseOptionalBoolean(valueAt(col.autoRenew));
+        const notes = valueAt(col.notes);
+        const renewalType = typeRaw ? normalizeType(typeRaw) : inferTypeFromCategory(category);
+        const renewalName = nameRaw || vendor;
 
-        if (!vendor || !renewalDate || !ownerEmail || Number.isNaN(noticeDays)) {
+        if (!renewalDate || Number.isNaN(noticeDays)) {
           failed += 1;
           continue;
         }
@@ -154,10 +330,20 @@ export function ContractsPage() {
         try {
           await contractsApi.create({
             vendor_name: vendor,
-            contract_name: formatContractName(normalizeType(typeRaw), nameRaw || vendor),
+            external_contract_id: externalContractId || undefined,
+            category: category || undefined,
+            renewal_type: renewalType,
+            renewal_name: renewalName,
+            contract_name: formatContractName(renewalType, renewalName),
+            start_date: startDate || undefined,
             renewal_date: renewalDate,
+            billing_frequency: billingFrequency || undefined,
+            contract_value: contractValue,
+            annualized_value: annualizedValue,
+            auto_renew: autoRenew,
             notice_period_days: noticeDays,
-            owner_email: ownerEmail,
+            owner_email: ownerEmail || undefined,
+            notes: notes || undefined,
           });
           created += 1;
         } catch {
@@ -171,7 +357,7 @@ export function ContractsPage() {
         text: failed ? `Imported ${created} row(s), failed ${failed} row(s).` : `Imported ${created} row(s) successfully.`,
       });
     } catch (error) {
-      setMessage({ tone: "danger", text: error instanceof Error ? error.message : "CSV import failed." });
+      setMessage({ tone: "danger", text: error instanceof Error ? error.message : "Import failed." });
     } finally {
       setImporting(false);
       event.target.value = "";
@@ -183,12 +369,18 @@ export function ContractsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-h1">Contracts</h1>
         <div className="flex items-center gap-sm">
-          <input ref={fileInputRef} type="file" accept=".csv,text/csv" className="hidden" onChange={onImportFile} />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+            className="hidden"
+            onChange={onImportFile}
+          />
           <Button variant="secondary" onClick={downloadTemplate}>
             Download Template
           </Button>
           <Button variant="secondary" isLoading={importing} disabled={readOnlyMode} onClick={() => fileInputRef.current?.click()}>
-            Import CSV
+            Import File
           </Button>
           <Button variant="secondary" onClick={downloadCsv}>
             Export CSV

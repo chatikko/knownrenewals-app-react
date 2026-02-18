@@ -9,6 +9,16 @@ export const RENEWAL_TYPES = [
 
 export type RenewalType = (typeof RENEWAL_TYPES)[number];
 
+export const BILLING_FREQUENCIES = [
+  "Monthly",
+  "Quarterly",
+  "Semi-Annual",
+  "Annual",
+  "Other",
+] as const;
+
+export type BillingFrequency = (typeof BILLING_FREQUENCIES)[number];
+
 export const REMINDER_PRESETS = [
   { label: "7 days before", value: 7 },
   { label: "14 days before", value: 14 },
