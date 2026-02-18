@@ -53,6 +53,9 @@ export function PillarPage() {
           <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software-pricing">
             View pricing
           </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software-features">
+            Explore renewal tracking software features
+          </Link>
           <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-reminder-software">
             Explore renewal reminder software
           </Link>

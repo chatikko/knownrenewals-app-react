@@ -12,6 +12,14 @@ import { Card } from "@/components/primitives/Card";
 import { Input } from "@/components/primitives/Input";
 import { Button } from "@/components/primitives/Button";
 import { ThemeToggle } from "@/components/primitives/ThemeToggle";
+import { trackEvent } from "@/lib/analytics";
+import {
+  buildAuthPath,
+  clearAuthIntent,
+  getAuthIntent,
+  sanitizeNextPath,
+  TEMPLATE_IMPORT_ONBOARDING_PATH,
+} from "@/lib/authIntent";
 
 const resendSchema = z.object({ email: z.string().email() });
 type ResendForm = z.infer<typeof resendSchema>;
@@ -22,11 +30,21 @@ export function VerifyEmailPage() {
   const [params] = useSearchParams();
   const token = useMemo(() => params.get("token") ?? "", [params]);
   const email = useMemo(() => params.get("email") ?? "", [params]);
+  const nextFromQuery = useMemo(() => sanitizeNextPath(params.get("next")), [params]);
+  const sourceFromQuery = useMemo(() => params.get("from"), [params]);
+  const loginPath = useMemo(() => buildAuthPath("/login", sourceFromQuery, nextFromQuery), [nextFromQuery, sourceFromQuery]);
   const mutation = useMutation({
     mutationFn: authApi.verifyEmail,
     onSuccess: (tokens) => {
       login(tokens);
-      navigate("/dashboard", { replace: true });
+      const storedIntent = getAuthIntent();
+      const source = sourceFromQuery ?? storedIntent.source;
+      const destination = nextFromQuery ?? storedIntent.nextPath ?? "/dashboard";
+      if (source === "template" && destination.startsWith(TEMPLATE_IMPORT_ONBOARDING_PATH)) {
+        trackEvent("signup_from_template_completed", { location: "verify_email", destination });
+      }
+      clearAuthIntent();
+      navigate(destination, { replace: true });
     },
   });
   const resendForm = useForm<ResendForm>({
@@ -69,7 +87,7 @@ export function VerifyEmailPage() {
           ) : null}
           {hasQueryToken && mutation.isError ? (
             <p className="text-center text-small text-text-secondary">
-              <Link className="text-primary" to="/login">Go to login</Link>
+              <Link className="text-primary" to={loginPath}>Go to login</Link>
             </p>
           ) : null}
         </div>

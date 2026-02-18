@@ -21,6 +21,7 @@ import { RenewalManagementPlatformPage } from "@/pages/marketing/RenewalManageme
 import { BestSubscriptionRenewalSoftwarePage } from "@/pages/marketing/BestSubscriptionRenewalSoftwarePage";
 import { PricingPage } from "@/pages/marketing/PricingPage";
 import { ExcelVsSoftwarePage } from "@/pages/marketing/ExcelVsSoftwarePage";
+import { FeaturesPage } from "@/pages/marketing/FeaturesPage";
 import { SlackRenewalAlertsPage } from "@/pages/marketing/SlackRenewalAlertsPage";
 import { SlackVsEmailRemindersPage } from "@/pages/marketing/SlackVsEmailRemindersPage";
 import { FreeTemplatePage } from "@/pages/marketing/FreeTemplatePage";
@@ -58,6 +59,7 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   { path: "/renewal-tracking-software-pricing", element: <PricingPage />, errorElement: <ErrorPage /> },
+  { path: "/renewal-tracking-software-features", element: <FeaturesPage />, errorElement: <ErrorPage /> },
   {
     path: "/excel-vs-renewal-tracking-software",
     element: <ExcelVsSoftwarePage />,

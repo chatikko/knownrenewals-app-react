@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { articles } from "@/content/articles";
 import { SeoPageLayout } from "@/pages/marketing/SeoPageLayout";
+import { buildAuthPath, TEMPLATE_IMPORT_ONBOARDING_PATH, TEMPLATE_ONBOARDING_SOURCE } from "@/lib/authIntent";
 
 const slackArticleSlugs = new Set([
   "how-to-send-renewal-reminders-to-slack",
@@ -12,6 +13,7 @@ const slackArticleSlugs = new Set([
 
 export function BlogPage() {
   const slackArticles = articles.filter((article) => slackArticleSlugs.has(article.slug));
+  const templateSignupPath = buildAuthPath("/signup", TEMPLATE_ONBOARDING_SOURCE, TEMPLATE_IMPORT_ONBOARDING_PATH);
 
   return (
     <SeoPageLayout
@@ -72,6 +74,13 @@ export function BlogPage() {
         <p className="mt-2 text-sm text-slate-600">
           If you are evaluating alternatives, start with these comparison resources.
         </p>
+        <p className="mt-2 text-sm text-slate-600">
+          Already filled our free template?{" "}
+          <Link className="text-emerald-700 hover:text-emerald-800" to={templateSignupPath}>
+            Sign up and import it in Contracts
+          </Link>
+          .
+        </p>
         <div className="mt-4 flex flex-wrap gap-3 text-sm">
           <Link className="text-emerald-700 hover:text-emerald-800" to="/excel-vs-renewal-tracking-software">
             Excel vs renewal tracking software
@@ -96,6 +105,9 @@ export function BlogPage() {
           </Link>
           <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software">
             Renewal tracking software guide
+          </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software-features">
+            Renewal tracking software features
           </Link>
         </div>
       </section>

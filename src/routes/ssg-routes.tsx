@@ -15,6 +15,7 @@ import { ContractReminderSystemPage } from "@/pages/marketing/ContractReminderSy
 import { RenewalManagementPlatformPage } from "@/pages/marketing/RenewalManagementPlatformPage";
 import { BestSubscriptionRenewalSoftwarePage } from "@/pages/marketing/BestSubscriptionRenewalSoftwarePage";
 import { PricingPage } from "@/pages/marketing/PricingPage";
+import { FeaturesPage } from "@/pages/marketing/FeaturesPage";
 import { ExcelVsSoftwarePage } from "@/pages/marketing/ExcelVsSoftwarePage";
 import { SlackRenewalAlertsPage } from "@/pages/marketing/SlackRenewalAlertsPage";
 import { SlackVsEmailRemindersPage } from "@/pages/marketing/SlackVsEmailRemindersPage";
@@ -31,6 +32,7 @@ const baseMarketingRoutes: RouteObject[] = [
   { path: "/renewal-management-platform", element: <RenewalManagementPlatformPage /> },
   { path: "/best-subscription-renewal-software", element: <BestSubscriptionRenewalSoftwarePage /> },
   { path: "/renewal-tracking-software-pricing", element: <PricingPage /> },
+  { path: "/renewal-tracking-software-features", element: <FeaturesPage /> },
   { path: "/excel-vs-renewal-tracking-software", element: <ExcelVsSoftwarePage /> },
   { path: "/slack-renewal-alerts", element: <SlackRenewalAlertsPage /> },
   { path: "/slack-alerts-vs-email-reminders", element: <SlackVsEmailRemindersPage /> },

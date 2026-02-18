@@ -5,8 +5,9 @@ import { contractsApi } from "@/api/contracts";
 import { integrationsApi } from "@/api/integrations";
 import { Card } from "@/components/primitives/Card";
 import { Table } from "@/components/primitives/Table";
-import { EmptyState, ErrorState, LoadingState } from "@/components/QueryState";
+import { ErrorState, LoadingState } from "@/components/QueryState";
 import { formatDate } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 
 type ContractBadgeStatus = "safe" | "soon" | "risk";
 
@@ -38,8 +39,38 @@ export function DashboardPage() {
 
   if (query.isLoading) return <LoadingState />;
   if (query.isError) return <ErrorState message="Failed to load dashboard." />;
-  if (!query.data || !query.data.items.length) return <EmptyState message="No contracts available yet." />;
+  if (!query.data) return <ErrorState message="Failed to load dashboard." />;
   const data = query.data;
+  if (!data.items.length) {
+    return (
+      <div className="space-y-lg">
+        <div className="flex items-center justify-between">
+          <h1 className="text-h1">Dashboard</h1>
+        </div>
+        <Card className="space-y-md border-border bg-gradient-to-br from-surface to-primary/5 shadow-sm">
+          <h2 className="text-body font-semibold text-text-primary">Start by importing your filled template</h2>
+          <p className="text-small text-text-secondary">
+            If you already filled the free spreadsheet, upload it once and auto-sync your contracts into KnowRenewals.
+          </p>
+          <div className="flex flex-wrap gap-sm">
+            <Link
+              to="/contracts?onboarding=import-template"
+              className="inline-flex items-center rounded-md bg-primary px-sm py-2 text-small font-medium text-primary-foreground hover:bg-primary/90"
+              onClick={() => trackEvent("template_cta_clicked", { location: "dashboard_empty", action: "import" })}
+            >
+              Import filled template
+            </Link>
+            <Link
+              to="/contracts/new"
+              className="inline-flex items-center rounded-md border border-border bg-surface px-sm py-2 text-small font-medium text-text-primary hover:bg-background"
+            >
+              Add one contract manually
+            </Link>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   const total = data.items.length;
   const soonCount = data.items.filter((item) => item.status === "soon").length;

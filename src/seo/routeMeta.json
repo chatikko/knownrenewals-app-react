@@ -110,14 +110,26 @@
   {
     "path": "/renewal-tracking-software-pricing",
     "title": "Renewal Tracking Software Pricing | KnowRenewals",
-    "description": "Compare affordable renewal management software pricing and choose a plan for your startup or small business team.",
+    "description": "Compare monthly and yearly renewal management software pricing and choose the right plan for your startup or SMB team.",
     "canonical": "https://knowrenewals.com/renewal-tracking-software-pricing",
     "robots": "index, follow",
     "ogType": "website",
-    "schemaTypes": ["BreadcrumbList", "Product"],
+    "schemaTypes": ["BreadcrumbList", "Product", "FAQPage"],
     "priority": 0.8,
     "changefreq": "weekly",
     "breadcrumbName": "Renewal Tracking Software Pricing"
+  },
+  {
+    "path": "/renewal-tracking-software-features",
+    "title": "Renewal Tracking Software Features for B2B Teams | KnowRenewals",
+    "description": "Explore renewal tracking software features including automated reminders, contract tracking, SaaS renewals, Slack alerts, import/export, and team dashboards.",
+    "canonical": "https://knowrenewals.com/renewal-tracking-software-features",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "WebPage", "FAQPage"],
+    "priority": 0.8,
+    "changefreq": "weekly",
+    "breadcrumbName": "Features"
   },
   {
     "path": "/excel-vs-renewal-tracking-software",

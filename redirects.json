@@ -60,6 +60,11 @@
     "type": "rewrite"
   },
   {
+    "source": "/renewal-tracking-software-features",
+    "destination": "/renewal-tracking-software-features.html",
+    "type": "rewrite"
+  },
+  {
     "source": "/excel-vs-renewal-tracking-software",
     "destination": "/excel-vs-renewal-tracking-software.html",
     "type": "rewrite"

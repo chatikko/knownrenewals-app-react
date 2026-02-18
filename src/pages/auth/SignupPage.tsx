@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +11,8 @@ import { Card } from "@/components/primitives/Card";
 import { Input } from "@/components/primitives/Input";
 import { Button } from "@/components/primitives/Button";
 import { ThemeToggle } from "@/components/primitives/ThemeToggle";
+import { trackEvent } from "@/lib/analytics";
+import { buildAuthPath, sanitizeNextPath, storeAuthIntent } from "@/lib/authIntent";
 
 const schema = z.object({
   account_name: z.string().min(2),
@@ -19,6 +22,18 @@ const schema = z.object({
 type Form = z.infer<typeof schema>;
 
 export function SignupPage() {
+  const [params] = useSearchParams();
+  const source = params.get("from");
+  const nextPath = sanitizeNextPath(params.get("next"));
+  const loginPath = useMemo(() => buildAuthPath("/login", source, nextPath), [source, nextPath]);
+
+  useEffect(() => {
+    storeAuthIntent(nextPath, source);
+    if (source === "template") {
+      trackEvent("signup_from_template_started", { location: "signup_page" });
+    }
+  }, [nextPath, source]);
+
   const form = useForm<Form>({
     resolver: zodResolver(schema),
     mode: "onChange",
@@ -45,7 +60,15 @@ export function SignupPage() {
       </div>
       <Card className="w-full max-w-md">
         <h1 className="mb-lg text-center text-h1">Create Account</h1>
-        <form className="space-y-md" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
+        <form
+          className="space-y-md"
+          onSubmit={form.handleSubmit((values) => {
+            if (source === "template") {
+              trackEvent("signup_from_template_started", { location: "signup_submit" });
+            }
+            mutation.mutate(values);
+          })}
+        >
           <Input required label="Account Name" {...form.register("account_name")} error={form.formState.errors.account_name?.message} />
           <Input required label="Email" type="email" {...form.register("email")} error={form.formState.errors.email?.message} />
           <Input required label="Password" type="password" {...form.register("password")} error={form.formState.errors.password?.message} />
@@ -71,8 +94,13 @@ export function SignupPage() {
           ) : null}
           <Button className="w-full" isLoading={mutation.isPending}>Create Account</Button>
         </form>
+        {source === "template" ? (
+          <p className="mt-sm text-center text-small text-text-secondary">
+            After verification, you will be taken directly to template import.
+          </p>
+        ) : null}
         <p className="mt-md text-center text-small text-text-secondary">
-          <Link className="text-primary" to="/login">Already have an account? Login</Link>
+          <Link className="text-primary" to={loginPath}>Already have an account? Login</Link>
         </p>
       </Card>
     </div>

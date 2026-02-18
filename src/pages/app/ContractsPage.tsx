@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useRef, useState, type ChangeEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as XLSX from "xlsx";
@@ -12,6 +12,7 @@ import { Alert } from "@/components/primitives/Alert";
 import { EmptyState, ErrorState, LoadingState } from "@/components/QueryState";
 import { formatDate } from "@/lib/format";
 import { extractRenewal, formatContractName, type RenewalType } from "@/lib/renewals";
+import { trackEvent } from "@/lib/analytics";
 
 function parseCsv(content: string): string[][] {
   const rows: string[][] = [];
@@ -155,7 +156,12 @@ function inferTypeFromCategory(category: string): RenewalType {
   return byCategory[normalized] ?? "Contract";
 }
 
+function normalizeExternalContractId(value: string): string {
+  return value.trim().toLowerCase();
+}
+
 export function ContractsPage() {
+  const [searchParams] = useSearchParams();
   const qc = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [importing, setImporting] = useState(false);
@@ -163,6 +169,7 @@ export function ContractsPage() {
   const query = useQuery({ queryKey: ["contracts"], queryFn: contractsApi.list });
   const billingQuery = useQuery({ queryKey: ["billing", "status"], queryFn: billingApi.status, retry: false });
   const readOnlyMode = Boolean(billingQuery.data?.read_only_mode);
+  const isTemplateOnboarding = searchParams.get("onboarding") === "import-template";
   if (query.isLoading) return <LoadingState />;
   if (query.isError) return <ErrorState message="Failed to load contracts." />;
   if (!query.data) return <EmptyState message="No contracts found." />;
@@ -270,6 +277,12 @@ export function ContractsPage() {
     }
     const file = event.target.files?.[0];
     if (!file) return;
+    if (isTemplateOnboarding) {
+      trackEvent("template_import_started", {
+        location: "contracts_import",
+        file_type: file.name.split(".").pop()?.toLowerCase() ?? "unknown",
+      });
+    }
     setMessage(null);
     setImporting(true);
 
@@ -300,7 +313,16 @@ export function ContractsPage() {
       }
 
       let created = 0;
+      let duplicateSkipped = 0;
       let failed = 0;
+      let missingContractId = 0;
+      const existingExternalIds = new Set(
+        data.items
+          .map((item) => normalizeExternalContractId(item.external_contract_id ?? ""))
+          .filter(Boolean),
+      );
+      const seenExternalIds = new Set(existingExternalIds);
+
       for (const row of rows.slice(1)) {
         if (!row.length || row.every((cell) => cell.trim() === "")) continue;
         const valueAt = (index: number) => (index >= 0 ? (row[index] ?? "").trim() : "");
@@ -313,6 +335,7 @@ export function ContractsPage() {
         const nameRaw = valueAt(col.renewalName);
         const noticeDays = noticeDaysRaw ? Number(noticeDaysRaw) : 30;
         const externalContractId = valueAt(col.externalContractId);
+        const normalizedExternalContractId = normalizeExternalContractId(externalContractId);
         const startDate = normalizeDateInput(valueAt(col.startDate));
         const billingFrequency = valueAt(col.billingFrequency);
         const contractValue = parseOptionalNumber(valueAt(col.contractValue));
@@ -321,9 +344,24 @@ export function ContractsPage() {
         const notes = valueAt(col.notes);
         const renewalType = typeRaw ? normalizeType(typeRaw) : inferTypeFromCategory(category);
         const renewalName = nameRaw || vendor;
+        let addedToSeen = false;
+
+        if (normalizedExternalContractId) {
+          if (seenExternalIds.has(normalizedExternalContractId)) {
+            duplicateSkipped += 1;
+            continue;
+          }
+          seenExternalIds.add(normalizedExternalContractId);
+          addedToSeen = true;
+        } else {
+          missingContractId += 1;
+        }
 
         if (!renewalDate || Number.isNaN(noticeDays)) {
           failed += 1;
+          if (addedToSeen) {
+            seenExternalIds.delete(normalizedExternalContractId);
+          }
           continue;
         }
 
@@ -348,13 +386,24 @@ export function ContractsPage() {
           created += 1;
         } catch {
           failed += 1;
+          if (addedToSeen) {
+            seenExternalIds.delete(normalizedExternalContractId);
+          }
         }
       }
 
       await qc.invalidateQueries({ queryKey: ["contracts"] });
+      if (isTemplateOnboarding) {
+        trackEvent("template_import_completed", {
+          imported: created,
+          skipped_duplicates: duplicateSkipped,
+          failed,
+          missing_contract_id: missingContractId,
+        });
+      }
       setMessage({
         tone: failed ? "danger" : "success",
-        text: failed ? `Imported ${created} row(s), failed ${failed} row(s).` : `Imported ${created} row(s) successfully.`,
+        text: `Imported ${created}, skipped duplicates ${duplicateSkipped}, failed ${failed}, missing Contract ID ${missingContractId}.`,
       });
     } catch (error) {
       setMessage({ tone: "danger", text: error instanceof Error ? error.message : "Import failed." });
@@ -377,17 +426,33 @@ export function ContractsPage() {
             onChange={onImportFile}
           />
           <Button variant="secondary" onClick={downloadTemplate}>
-            Download Template
+            Download Blank Template
           </Button>
-          <Button variant="secondary" isLoading={importing} disabled={readOnlyMode} onClick={() => fileInputRef.current?.click()}>
+          <Button
+            variant="secondary"
+            isLoading={importing}
+            disabled={readOnlyMode}
+            onClick={() => {
+              if (isTemplateOnboarding) {
+                trackEvent("template_cta_clicked", { location: "contracts_page", action: "open_import" });
+              }
+              fileInputRef.current?.click();
+            }}
+          >
             Import File
           </Button>
           <Button variant="secondary" onClick={downloadCsv}>
-            Export CSV
+            Export Filled File (CSV)
           </Button>
           <Link to="/contracts/new"><Button disabled={readOnlyMode}>Add Contract</Button></Link>
         </div>
       </div>
+      {isTemplateOnboarding ? (
+        <Alert
+          tone="info"
+          message="Upload your filled template file to auto-sync contracts. Use Download Blank Template only if you need a fresh file."
+        />
+      ) : null}
       {readOnlyMode ? (
         <Alert
           tone="warning"

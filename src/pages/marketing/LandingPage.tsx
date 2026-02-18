@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, ChevronRight, Github, Linkedin, Menu, Twitter } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
+import { buildAuthPath, TEMPLATE_IMPORT_ONBOARDING_PATH, TEMPLATE_ONBOARDING_SOURCE } from "@/lib/authIntent";
+import { type PlanTier, PRICING_PLANS } from "@/content/pricing";
 
 const operationalProof = [
   {
@@ -98,26 +101,15 @@ const buyerResources = [
   { to: "/renewal-tracking-software-pricing", label: "Renewal tracking software pricing" },
 ] as const;
 
-const pricingSnapshot = [
-  {
-    tier: "Founders",
-    price: "$19/mo",
-    points: ["Up to 25 renewals", "Email reminders", "Slack daily digest"],
-    featured: false,
-  },
-  {
-    tier: "Pro",
-    price: "$99/mo",
-    points: ["Unlimited renewals", "Up to 5 users", "Slack digest + instant risk alerts"],
-    featured: true,
-  },
-  {
-    tier: "Team",
-    price: "$199/mo",
-    points: ["Up to 15 users", "Role-based ownership", "Priority support"],
-    featured: false,
-  },
-] as const;
+const pricingSnapshot = (["founders", "pro", "team"] as PlanTier[]).map((tier) => {
+  const plan = PRICING_PLANS[tier];
+  return {
+    tier: plan.name,
+    price: `$${plan.monthlyPrice}/mo`,
+    points: [plan.renewalsLimit, plan.seats, `Slack: ${plan.slackDigest}`],
+    featured: Boolean(plan.featured),
+  };
+});
 
 const faqItems = [
   {
@@ -148,6 +140,11 @@ const faqItems = [
 
 export function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const templateSignupPath = buildAuthPath(
+    "/signup",
+    TEMPLATE_ONBOARDING_SOURCE,
+    TEMPLATE_IMPORT_ONBOARDING_PATH,
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-100 via-white to-slate-100 text-slate-700">
@@ -271,21 +268,21 @@ export function LandingPage() {
                     <p className="text-sm font-medium text-slate-900">Cloud Security Contract</p>
                     <span className="text-xs font-semibold uppercase tracking-wide text-rose-700">Risk</span>
                   </div>
-                  <p className="mt-1 text-xs text-slate-600">Renewal in 5 days · Owner: Finance</p>
+                  <p className="mt-1 text-xs text-slate-600">Renewal in 5 days | Owner: Finance</p>
                 </div>
                 <div className="rounded-xl border border-amber-200 bg-amber-50 p-3">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-slate-900">Analytics SaaS</p>
                     <span className="text-xs font-semibold uppercase tracking-wide text-amber-700">Soon</span>
                   </div>
-                  <p className="mt-1 text-xs text-slate-600">Renewal in 18 days · Owner: Ops</p>
+                  <p className="mt-1 text-xs text-slate-600">Renewal in 18 days | Owner: Ops</p>
                 </div>
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-slate-900">Primary Domain</p>
                     <span className="text-xs font-semibold uppercase tracking-wide text-emerald-700">On track</span>
                   </div>
-                  <p className="mt-1 text-xs text-slate-600">Renewal in 47 days · Owner: IT</p>
+                  <p className="mt-1 text-xs text-slate-600">Renewal in 47 days | Owner: IT</p>
                 </div>
               </div>
             </aside>
@@ -331,6 +328,13 @@ export function LandingPage() {
               </article>
             ))}
           </div>
+          <p className="text-sm text-slate-600">
+            Want the full capability breakdown?{" "}
+            <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software-features" reloadDocument>
+              Explore all features
+            </Link>
+            .
+          </p>
         </section>
 
         <section className="space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
@@ -370,6 +374,36 @@ export function LandingPage() {
               View all guides
               <ChevronRight className="ml-1 h-4 w-4" />
             </Link>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-emerald-50 p-6 shadow-sm sm:p-8">
+          <div className="grid items-center gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="space-y-3">
+              <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Still using spreadsheets?</h2>
+              <p className="text-sm leading-relaxed text-slate-600">
+                Start free with our formula-ready template, fill your contracts, then sign up and import the file into
+                KnowRenewals without manual contract-by-contract entry.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              <Link
+                to={templateSignupPath}
+                reloadDocument
+                onClick={() => trackEvent("template_cta_clicked", { location: "landing_bridge", action: "signup" })}
+                className="inline-flex items-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-700"
+              >
+                Start Free Trial and Import
+              </Link>
+              <Link
+                to="/free-renewal-tracking-spreadsheet-template"
+                reloadDocument
+                onClick={() => trackEvent("template_cta_clicked", { location: "landing_bridge", action: "download" })}
+                className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-400"
+              >
+                Get Free Template
+              </Link>
+            </div>
           </div>
         </section>
 

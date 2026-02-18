@@ -1,6 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,13 +12,23 @@ import { Card } from "@/components/primitives/Card";
 import { Input } from "@/components/primitives/Input";
 import { Button } from "@/components/primitives/Button";
 import { ThemeToggle } from "@/components/primitives/ThemeToggle";
+import { buildAuthPath, clearAuthIntent, getAuthIntent, sanitizeNextPath, storeAuthIntent } from "@/lib/authIntent";
 
 const schema = z.object({ email: z.string().email(), password: z.string().min(8) });
 type Form = z.infer<typeof schema>;
 
 export function LoginPage() {
+  const [params] = useSearchParams();
   const { login } = useAuth();
   const navigate = useNavigate();
+  const source = params.get("from");
+  const nextFromQuery = sanitizeNextPath(params.get("next"));
+  const signupPath = useMemo(() => buildAuthPath("/signup", source, nextFromQuery), [source, nextFromQuery]);
+
+  useEffect(() => {
+    storeAuthIntent(nextFromQuery, source);
+  }, [nextFromQuery, source]);
+
   const form = useForm<Form>({
     resolver: zodResolver(schema),
     mode: "onChange",
@@ -29,7 +40,10 @@ export function LoginPage() {
     mutationFn: authApi.login,
     onSuccess: (tokens) => {
       login(tokens);
-      navigate("/dashboard");
+      const storedIntent = getAuthIntent();
+      const destination = storedIntent.nextPath ?? nextFromQuery ?? "/dashboard";
+      clearAuthIntent();
+      navigate(destination);
     },
   });
   const resendMutation = useMutation({ mutationFn: authApi.resendVerification });
@@ -74,7 +88,7 @@ export function LoginPage() {
           <Button className="w-full" isLoading={mutation.isPending}>Login</Button>
         </form>
         <p className="mt-md text-center text-small text-text-secondary">
-          <Link className="text-primary" to="/signup">Create account</Link>
+          <Link className="text-primary" to={signupPath}>Create account</Link>
         </p>
       </Card>
     </div>

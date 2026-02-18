@@ -81,7 +81,7 @@ function buildBreadcrumbSchema(route) {
   };
 }
 
-function getFaqSchema() {
+function getDefaultFaqSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -112,6 +112,167 @@ function getFaqSchema() {
       },
     ],
   };
+}
+
+function getPricingFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Can I start on Founders and upgrade later?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Teams can start on Founders and upgrade to Pro or Team when renewal volume and collaboration needs increase.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What is included in Slack alerts by plan?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Founders includes daily Slack digest. Pro and Team include digest plus instant alerts for risk and due-in-7-days renewals.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do all plans support spreadsheet import?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. All plans include CSV import and export so teams can migrate from spreadsheet workflows quickly.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is yearly billing discounted?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Yearly billing offers the equivalent of two months free compared with monthly pricing.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Which plan is best for cross-functional teams?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Pro fits most cross-functional teams. Team is best for higher seat requirements and stronger role-based collaboration.",
+        },
+      },
+    ],
+  };
+}
+
+function getFeaturesFaqSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What features matter most in renewal tracking software?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Teams prioritize automated reminders, ownership workflows, risk visibility, and import/export support for consistent renewal execution.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Can we track contracts, SaaS tools, licenses, and domains together?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Teams can centralize contracts, SaaS subscriptions, licenses, and domains in one dashboard with shared ownership.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How do Slack alerts work for renewals?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Slack supports daily digest and plan-based instant alerts so teams can respond quickly to risk and due-soon renewals.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Can we start from a spreadsheet and move into the app?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Teams can start with a spreadsheet template, then sign up and import into Contracts to sync renewal data.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Does this reduce manual follow-up work?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Scheduled reminders and shared status tracking reduce manual follow-ups and missed deadline risk.",
+        },
+      },
+    ],
+  };
+}
+
+function getFaqSchema(route) {
+  if (route.path === "/renewal-tracking-software-pricing") {
+    return getPricingFaqSchema();
+  }
+  if (route.path === "/renewal-tracking-software-features") {
+    return getFeaturesFaqSchema();
+  }
+  return getDefaultFaqSchema();
+}
+
+function getPricingProductOffers(canonical) {
+  return [
+    {
+      "@type": "Offer",
+      name: "Founders Monthly",
+      priceCurrency: "USD",
+      price: "19",
+      availability: "https://schema.org/InStock",
+      url: `${canonical}#pricing-founders`,
+    },
+    {
+      "@type": "Offer",
+      name: "Founders Yearly",
+      priceCurrency: "USD",
+      price: "190",
+      availability: "https://schema.org/InStock",
+      url: `${canonical}#pricing-founders`,
+    },
+    {
+      "@type": "Offer",
+      name: "Pro Monthly",
+      priceCurrency: "USD",
+      price: "99",
+      availability: "https://schema.org/InStock",
+      url: `${canonical}#pricing-pro`,
+    },
+    {
+      "@type": "Offer",
+      name: "Pro Yearly",
+      priceCurrency: "USD",
+      price: "990",
+      availability: "https://schema.org/InStock",
+      url: `${canonical}#pricing-pro`,
+    },
+    {
+      "@type": "Offer",
+      name: "Team Monthly",
+      priceCurrency: "USD",
+      price: "199",
+      availability: "https://schema.org/InStock",
+      url: `${canonical}#pricing-team`,
+    },
+    {
+      "@type": "Offer",
+      name: "Team Yearly",
+      priceCurrency: "USD",
+      price: "1990",
+      availability: "https://schema.org/InStock",
+      url: `${canonical}#pricing-team`,
+    },
+  ];
 }
 
 function getSchemaBlocks(route) {
@@ -169,7 +330,7 @@ function getSchemaBlocks(route) {
   }
 
   if (schemaTypes.has("FAQPage")) {
-    schemaBlocks.push(getFaqSchema());
+    schemaBlocks.push(getFaqSchema(route));
   }
 
   if (schemaTypes.has("CollectionPage")) {
@@ -190,6 +351,16 @@ function getSchemaBlocks(route) {
   }
 
   if (schemaTypes.has("Product")) {
+    const offers =
+      route.path === "/renewal-tracking-software-pricing"
+        ? getPricingProductOffers(route.canonical)
+        : {
+            "@type": "Offer",
+            priceCurrency: "USD",
+            price: "19",
+            availability: "https://schema.org/InStock",
+          };
+
     schemaBlocks.push({
       "@context": "https://schema.org",
       "@type": "Product",
@@ -201,12 +372,7 @@ function getSchemaBlocks(route) {
         name: "KnowRenewals",
       },
       url: route.canonical,
-      offers: {
-        "@type": "Offer",
-        priceCurrency: "USD",
-        price: "19",
-        availability: "https://schema.org/InStock",
-      },
+      offers,
     });
   }
 

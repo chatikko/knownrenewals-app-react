@@ -7,32 +7,9 @@ import { Card } from "@/components/primitives/Card";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmAlertDialog } from "@/components/primitives/ConfirmAlertDialog";
 import { LoadingState, ErrorState } from "@/components/QueryState";
+import { type BillingCycle, type PlanTier, PRICING_PLANS } from "@/content/pricing";
 
-type PlanTier = "founders" | "pro" | "team";
-type BillingCycle = "monthly" | "yearly";
-
-const PLAN_DETAILS: Record<PlanTier, { name: string; monthlyPrice: number; yearlyPrice: number; features: string[]; tagline?: string }> = {
-  founders: {
-    name: "Founders",
-    monthlyPrice: 19,
-    yearlyPrice: 190,
-    tagline: "Only for first 50 users",
-    features: ["Up to 25 renewals", "1 user", "Email reminders", "CSV import & export"],
-  },
-  pro: {
-    name: "Pro",
-    monthlyPrice: 99,
-    yearlyPrice: 990,
-    tagline: "Most Popular",
-    features: ["Unlimited renewals", "Up to 5 users", "Custom reminder schedules", "Team-wide visibility"],
-  },
-  team: {
-    name: "Team",
-    monthlyPrice: 199,
-    yearlyPrice: 1990,
-    features: ["Up to 15 users", "Role-based access", "Shared renewal ownership", "Priority support"],
-  },
-};
+const PLAN_DETAILS = PRICING_PLANS;
 
 function formatCurrency(amount: number) {
   return `$${amount.toLocaleString("en-US")}`;
