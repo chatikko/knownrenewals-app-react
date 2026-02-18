@@ -21,7 +21,18 @@ if (!existsSync(redirectsJsonPath)) {
 const expectedRewrites = new Map(
   getAllIndexableRoutes(root).map((route) => [route.path, `/${routePathToTemplateFile(route.path)}`]),
 );
-const expectedLandingPaths = ["/landing", "/landing/"];
+const expectedRedirects = [
+  { source: "/landing", destination: "/" },
+  { source: "/landing/", destination: "/" },
+  {
+    source: "/pricing",
+    destination: "/renewal-tracking-software-pricing",
+  },
+  {
+    source: "/pricing/",
+    destination: "/renewal-tracking-software-pricing",
+  },
+];
 
 function parseRedirectsFile() {
   const lines = readFileSync(publicRedirectsPath, "utf8")
@@ -41,11 +52,11 @@ function parseRedirectsJson() {
   return JSON.parse(readFileSync(redirectsJsonPath, "utf8"));
 }
 
-function hasLandingRedirect(entries, source) {
+function hasRedirect(entries, source, destination) {
   return entries.some(
     (entry) =>
       entry.source === source &&
-      entry.destination === "/" &&
+      entry.destination === destination &&
       entry.type === "redirect" &&
       (entry.status === undefined || entry.status === "" || entry.status === "301"),
   );
@@ -61,12 +72,12 @@ const redirectsFileEntries = parseRedirectsFile();
 const redirectsJsonEntries = parseRedirectsJson();
 const errors = [];
 
-for (const landingPath of expectedLandingPaths) {
-  if (!hasLandingRedirect(redirectsFileEntries, landingPath)) {
-    errors.push(`public/_redirects missing redirect ${landingPath} -> / (301)`);
+for (const rule of expectedRedirects) {
+  if (!hasRedirect(redirectsFileEntries, rule.source, rule.destination)) {
+    errors.push(`public/_redirects missing redirect ${rule.source} -> ${rule.destination} (301)`);
   }
-  if (!hasLandingRedirect(redirectsJsonEntries, landingPath)) {
-    errors.push(`redirects.json missing redirect ${landingPath} -> / (redirect)`);
+  if (!hasRedirect(redirectsJsonEntries, rule.source, rule.destination)) {
+    errors.push(`redirects.json missing redirect ${rule.source} -> ${rule.destination} (redirect)`);
   }
 }
 

@@ -14,16 +14,29 @@ const explicitRewrites = routes.map((route) => ({
   type: "rewrite",
 }));
 
-const redirectRules = [
+const permanentRedirects = [
   { source: "/landing", destination: "/", type: "redirect" },
   { source: "/landing/", destination: "/", type: "redirect" },
+  {
+    source: "/pricing",
+    destination: "/renewal-tracking-software-pricing",
+    type: "redirect",
+  },
+  {
+    source: "/pricing/",
+    destination: "/renewal-tracking-software-pricing",
+    type: "redirect",
+  },
+];
+
+const redirectRules = [
+  ...permanentRedirects,
   ...explicitRewrites,
   { source: "/*", destination: "/spa.html", type: "rewrite" },
 ];
 
 const netlifyLines = [
-  "/landing / 301",
-  "/landing/ / 301",
+  ...permanentRedirects.map((rule) => `${rule.source} ${rule.destination} 301`),
   ...explicitRewrites.map((rule) => `${rule.source} ${rule.destination} 200`),
   "/* /spa.html 200",
 ];
