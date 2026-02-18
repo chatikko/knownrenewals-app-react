@@ -126,7 +126,9 @@ function getSchemaBlocks(route) {
     schemaBlocks.push({
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://knowrenewals.com/#organization",
       name: "KnowRenewals",
+      alternateName: "Know Renewals",
       url: "https://knowrenewals.com",
       logo: "https://knowrenewals.com/logo.png",
       email: "contact@knowrenewals.com",
@@ -137,8 +139,13 @@ function getSchemaBlocks(route) {
     schemaBlocks.push({
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://knowrenewals.com/#website",
       name: "KnowRenewals",
+      alternateName: "Know Renewals",
       url: "https://knowrenewals.com",
+      publisher: {
+        "@id": "https://knowrenewals.com/#organization",
+      },
     });
   }
 
@@ -270,6 +277,8 @@ function buildCommonHead(route) {
     <title>${title}</title>
     <meta name="description" content="${description}" />
     <meta name="robots" content="${robots}" />
+    <meta name="application-name" content="KnowRenewals" />
+    <meta name="apple-mobile-web-app-title" content="KnowRenewals" />
     <link rel="canonical" href="${canonical}" />
     <meta property="og:type" content="${ogType}" />
     <meta property="og:site_name" content="KnowRenewals" />
