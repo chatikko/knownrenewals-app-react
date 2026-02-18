@@ -76,6 +76,18 @@ export function BlogPage() {
           <Link className="text-emerald-700 hover:text-emerald-800" to="/excel-vs-renewal-tracking-software">
             Excel vs renewal tracking software
           </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-reminder-software">
+            Renewal reminder software options
+          </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/contract-reminder-system">
+            Contract reminder system setup
+          </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-management-platform">
+            Renewal management platform overview
+          </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/best-subscription-renewal-software">
+            Best subscription renewal software buyer guide
+          </Link>
           <Link className="text-emerald-700 hover:text-emerald-800" to="/free-renewal-tracking-spreadsheet-template">
             Free renewal tracking spreadsheet template
           </Link>

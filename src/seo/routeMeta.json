@@ -60,6 +60,54 @@
     "breadcrumbName": "SaaS Renewal Management"
   },
   {
+    "path": "/renewal-reminder-software",
+    "title": "Renewal Reminder Software for SMB Teams | KnowRenewals",
+    "description": "Automate renewal reminders for subscriptions, contracts, domains, and licenses so teams act before deadlines.",
+    "canonical": "https://knowrenewals.com/renewal-reminder-software",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.8,
+    "changefreq": "weekly",
+    "breadcrumbName": "Renewal Reminder Software"
+  },
+  {
+    "path": "/contract-reminder-system",
+    "title": "Contract Reminder System for Renewal Deadlines | KnowRenewals",
+    "description": "Track notice periods, expiration dates, and owner actions with a contract reminder system built for B2B teams.",
+    "canonical": "https://knowrenewals.com/contract-reminder-system",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.8,
+    "changefreq": "weekly",
+    "breadcrumbName": "Contract Reminder System"
+  },
+  {
+    "path": "/renewal-management-platform",
+    "title": "Renewal Management Platform for Finance and Ops | KnowRenewals",
+    "description": "Use one renewal management platform to centralize recurring renewals, ownership, reminders, and reporting.",
+    "canonical": "https://knowrenewals.com/renewal-management-platform",
+    "robots": "index, follow",
+    "ogType": "website",
+    "schemaTypes": ["BreadcrumbList", "WebPage"],
+    "priority": 0.8,
+    "changefreq": "weekly",
+    "breadcrumbName": "Renewal Management Platform"
+  },
+  {
+    "path": "/best-subscription-renewal-software",
+    "title": "Best Subscription Renewal Software: Buyer Guide | KnowRenewals",
+    "description": "Evaluate the best subscription renewal software by automation, ownership, pricing, and rollout speed.",
+    "canonical": "https://knowrenewals.com/best-subscription-renewal-software",
+    "robots": "index, follow",
+    "ogType": "article",
+    "schemaTypes": ["BreadcrumbList", "Article"],
+    "priority": 0.7,
+    "changefreq": "monthly",
+    "breadcrumbName": "Best Subscription Renewal Software"
+  },
+  {
     "path": "/renewal-tracking-software-pricing",
     "title": "Renewal Tracking Software Pricing | KnowRenewals",
     "description": "Compare affordable renewal management software pricing and choose a plan for your startup or small business team.",

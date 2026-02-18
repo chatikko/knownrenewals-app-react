@@ -15,6 +15,10 @@ import { PillarPage } from "@/pages/marketing/PillarPage";
 import { SubscriptionTrackerPage } from "@/pages/marketing/SubscriptionTrackerPage";
 import { ContractManagementPage } from "@/pages/marketing/ContractManagementPage";
 import { SaasRenewalPage } from "@/pages/marketing/SaasRenewalPage";
+import { RenewalReminderSoftwarePage } from "@/pages/marketing/RenewalReminderSoftwarePage";
+import { ContractReminderSystemPage } from "@/pages/marketing/ContractReminderSystemPage";
+import { RenewalManagementPlatformPage } from "@/pages/marketing/RenewalManagementPlatformPage";
+import { BestSubscriptionRenewalSoftwarePage } from "@/pages/marketing/BestSubscriptionRenewalSoftwarePage";
 import { PricingPage } from "@/pages/marketing/PricingPage";
 import { ExcelVsSoftwarePage } from "@/pages/marketing/ExcelVsSoftwarePage";
 import { SlackRenewalAlertsPage } from "@/pages/marketing/SlackRenewalAlertsPage";
@@ -45,6 +49,14 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   { path: "/saas-renewal-management", element: <SaasRenewalPage />, errorElement: <ErrorPage /> },
+  { path: "/renewal-reminder-software", element: <RenewalReminderSoftwarePage />, errorElement: <ErrorPage /> },
+  { path: "/contract-reminder-system", element: <ContractReminderSystemPage />, errorElement: <ErrorPage /> },
+  { path: "/renewal-management-platform", element: <RenewalManagementPlatformPage />, errorElement: <ErrorPage /> },
+  {
+    path: "/best-subscription-renewal-software",
+    element: <BestSubscriptionRenewalSoftwarePage />,
+    errorElement: <ErrorPage />,
+  },
   { path: "/renewal-tracking-software-pricing", element: <PricingPage />, errorElement: <ErrorPage /> },
   {
     path: "/excel-vs-renewal-tracking-software",

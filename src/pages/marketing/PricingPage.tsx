@@ -45,6 +45,28 @@ export function PricingPage() {
         </Link>{" "}
         before choosing a plan.
       </p>
+      <p className="text-sm text-slate-600">
+        Compare adjacent options including{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-reminder-software">
+          renewal reminder software
+        </Link>
+        ,{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/contract-reminder-system">
+          contract reminder systems
+        </Link>
+        , and a{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/best-subscription-renewal-software">
+          best subscription renewal software buyer guide
+        </Link>
+        .
+      </p>
+      <p className="text-sm text-slate-600">
+        If your team wants a broader operating model, review the{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-management-platform">
+          renewal management platform overview
+        </Link>
+        .
+      </p>
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
         <h3 className="text-lg font-semibold text-slate-900">Ready to start?</h3>
         <p className="mt-2 text-sm text-slate-600">

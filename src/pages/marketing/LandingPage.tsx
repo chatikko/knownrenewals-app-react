@@ -259,6 +259,18 @@ export function LandingPage() {
               <Link className="block text-emerald-700 hover:text-emerald-800" to="/saas-renewal-management">
                 How to manage SaaS renewals
               </Link>
+              <Link className="block text-emerald-700 hover:text-emerald-800" to="/renewal-reminder-software">
+                Renewal reminder software for deadline control
+              </Link>
+              <Link className="block text-emerald-700 hover:text-emerald-800" to="/contract-reminder-system">
+                Contract reminder system for notice periods
+              </Link>
+              <Link className="block text-emerald-700 hover:text-emerald-800" to="/renewal-management-platform">
+                Centralized renewal management platform
+              </Link>
+              <Link className="block text-emerald-700 hover:text-emerald-800" to="/best-subscription-renewal-software">
+                Best subscription renewal software buyer guide
+              </Link>
               <Link className="block text-emerald-700 hover:text-emerald-800" to="/excel-vs-renewal-tracking-software">
                 Excel vs renewal tracking software
               </Link>

@@ -53,6 +53,18 @@ export function PillarPage() {
           <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software-pricing">
             View pricing
           </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-reminder-software">
+            Explore renewal reminder software
+          </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/contract-reminder-system">
+            Review contract reminder systems
+          </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-management-platform">
+            See renewal management platform benefits
+          </Link>
+          <Link className="text-emerald-700 hover:text-emerald-800" to="/best-subscription-renewal-software">
+            Read the best subscription renewal software guide
+          </Link>
           <Link className="text-emerald-700 hover:text-emerald-800" to="/excel-vs-renewal-tracking-software">
             Compare with spreadsheets
           </Link>

@@ -35,6 +35,26 @@
     "type": "rewrite"
   },
   {
+    "source": "/renewal-reminder-software",
+    "destination": "/renewal-reminder-software.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/contract-reminder-system",
+    "destination": "/contract-reminder-system.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/renewal-management-platform",
+    "destination": "/renewal-management-platform.html",
+    "type": "rewrite"
+  },
+  {
+    "source": "/best-subscription-renewal-software",
+    "destination": "/best-subscription-renewal-software.html",
+    "type": "rewrite"
+  },
+  {
     "source": "/renewal-tracking-software-pricing",
     "destination": "/renewal-tracking-software-pricing.html",
     "type": "rewrite"

@@ -48,9 +48,25 @@ export function ExcelVsSoftwarePage() {
         <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software-pricing">
           pricing options
         </Link>{" "}
-        or the{" "}
+        , the{" "}
         <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-tracking-software">
           full buyer guide
+        </Link>
+        , and focused pages for{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-reminder-software">
+          renewal reminder software
+        </Link>
+        ,{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/contract-reminder-system">
+          contract reminder systems
+        </Link>
+        ,{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/renewal-management-platform">
+          renewal management platforms
+        </Link>
+        , and the{" "}
+        <Link className="text-emerald-700 hover:text-emerald-800" to="/best-subscription-renewal-software">
+          best subscription renewal software buyer guide
         </Link>
         .
       </p>
