@@ -2,6 +2,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import {
   articlePath,
+  getExpectedSitemapLastmodByPath,
   getAllIndexableRoutes,
   loadArticles,
   routePathToTemplateFile,
@@ -507,15 +508,16 @@ function writeRouteTemplate(route) {
 }
 
 function buildSitemap(routes) {
-  const today = new Date().toISOString().slice(0, 10);
+  const lastmodByPath = getExpectedSitemapLastmodByPath(routes, root);
   const entries = routes.map((route) => {
-    const article = articleByPath.get(route.path);
-    const lastmod = article?.updatedAt ?? today;
+    const lastmod = lastmodByPath.get(route.path);
+    if (!lastmod) {
+      throw new Error(`Missing sitemap lastmod for route: ${route.path}`);
+    }
+
     return `  <url>
     <loc>${route.canonical}</loc>
     <lastmod>${lastmod}</lastmod>
-    <changefreq>${route.changefreq}</changefreq>
-    <priority>${Number(route.priority).toFixed(1)}</priority>
   </url>`;
   });
 
