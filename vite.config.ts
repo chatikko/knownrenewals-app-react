@@ -111,6 +111,7 @@ export default defineConfig({
     },
   },
   build: {
+    sourcemap: true,
     rollupOptions: {
       output: {
         entryFileNames: "assets/app.js",
